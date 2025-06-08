@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 public class InMemoryItemStorage {
     private final HashMap<Long, Item> itemMap;
     private long idCounter;
-
+    @Autowired
     public InMemoryItemStorage(HashMap<Long, Item> itemMap) {
         this.itemMap = itemMap;
         idCounter = 0;

@@ -38,7 +38,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public User update(User user) {
-        return storage.create(user);
+        if(!storage.getUserIds().contains(user.getId()))
+            throw new NotFoundException("Невозможно обновить пользователя которого нет");
+        return storage.update(user);
     }
 
     public void delete(long id) {
