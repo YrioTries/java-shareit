@@ -1,9 +1,12 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+@Qualifier("InMemoryUserStorage")
 public class InMemoryUserStorage {
     private final HashMap<Long, User> userMap;
     private long idCounter;
@@ -11,6 +14,14 @@ public class InMemoryUserStorage {
     public InMemoryUserStorage(HashMap<Long, User> userMap) {
         this.userMap = userMap;
         idCounter = 0;
+    }
+
+    protected ArrayList<Long> getUserIds() {
+        return new ArrayList<Long>(userMap.keySet());
+    }
+
+    public ArrayList<User> get() {
+        return new ArrayList<User>(userMap.values());
     }
 
     public User create (User user) {
