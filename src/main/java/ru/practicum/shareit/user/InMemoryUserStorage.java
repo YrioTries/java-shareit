@@ -38,9 +38,10 @@ public class InMemoryUserStorage {
 
     public User update(User user) {
         User updatedUser = userMap.get(user.getId());
-
-        updatedUser.setName(user.getName());
-        updatedUser.setEmail(user.getEmail());
+        if (user.getName() != null)
+            updatedUser.setName(user.getName());
+        if(user.getEmail() != null)
+            updatedUser.setEmail(user.getEmail());
 
         userMap.put(user.getId(), updatedUser);
 
