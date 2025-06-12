@@ -7,7 +7,9 @@ import java.util.Map;
 
 public interface UserService {
 
-    ArrayList<User> get();
+    ArrayList<User> getUserList();
+
+    User getUser(Long id);
 
     User create(User user);
 

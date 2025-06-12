@@ -31,6 +31,10 @@ public class InMemoryUserStorage {
         return userMap.containsKey(id);
     }
 
+    public User getUser(Long id) {
+        return userMap.get(id);
+    }
+
     public User create (User user) {
         User newUser = new User(
                 idCounter++,

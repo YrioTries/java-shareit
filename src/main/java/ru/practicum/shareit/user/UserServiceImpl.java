@@ -21,8 +21,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ArrayList<User> get() {
+    public ArrayList<User> getUserList() {
         return storage.getUserList();
+    }
+
+    public User getUser(Long id) {
+        if (id == null || !storage.isUserExist(id))
+            throw new NotFoundException("Пользователя с таким id не существует");
+
+        return storage.getUser(id);
     }
 
     @Override
