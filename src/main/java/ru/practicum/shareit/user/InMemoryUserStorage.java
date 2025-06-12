@@ -1,11 +1,14 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+@Component
 @Qualifier("InMemoryUserStorage")
 public class InMemoryUserStorage {
     private final HashMap<Long, User> userMap;
@@ -13,15 +16,19 @@ public class InMemoryUserStorage {
 
     public InMemoryUserStorage(HashMap<Long, User> userMap) {
         this.userMap = userMap;
-        idCounter = 0;
+        idCounter = 1;
     }
 
     protected ArrayList<Long> getUserIds() {
         return new ArrayList<Long>(userMap.keySet());
     }
 
-    public ArrayList<User> get() {
+    public ArrayList<User> getUserList() {
         return new ArrayList<User>(userMap.values());
+    }
+
+    public boolean isUserExist(long id) {
+        return userMap.containsKey(id);
     }
 
     public User create (User user) {
@@ -36,14 +43,16 @@ public class InMemoryUserStorage {
         return newUser;
     }
 
-    public User update(User user) {
-        User updatedUser = userMap.get(user.getId());
-        if (user.getName() != null)
-            updatedUser.setName(user.getName());
-        if(user.getEmail() != null)
-            updatedUser.setEmail(user.getEmail());
+    public User update(Long id, Map<String, Object> updates) {
+        User updatedUser = userMap.get(id);
+        if (updates.containsKey("name"))
+            updatedUser.setName((String) updates.get("name"));
+        if(updates.containsKey("email"))
+            updatedUser.setEmail((String) updates.get("email"));
 
-        userMap.put(user.getId(), updatedUser);
+        updatedUser.setId(id);
+
+        userMap.put(updatedUser.getId(), updatedUser);
 
         return updatedUser;
     }

@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface UserService {
 
@@ -10,7 +11,7 @@ public interface UserService {
 
     User create(User user);
 
-    User update(User user);
+    User update(Long id, Map<String, Object> updates);
 
     void delete(long id);
 }

@@ -13,8 +13,10 @@ import org.springframework.lang.Nullable;
 @Data
 @AllArgsConstructor
 public class User {
-    private long id;
+    private Long id;
     private String name;
     @Email
+    @NotBlank
+    @NotEmpty
     private String email;
 }

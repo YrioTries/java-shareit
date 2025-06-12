@@ -8,17 +8,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.shareit.exception.ConflictException;
-import ru.practicum.shareit.exception.InternalServerException;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.*;
 
 @RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validationException(final ValidationException e) {
+    public ErrorResponse validation(final ValidationException e) {
         return new ErrorResponse("ERROR[400]: Произошла ошибка ValidationException: ", e.getMessage());
     }
 
@@ -46,9 +43,15 @@ public class ErrorHandler {
         return new ErrorResponse("ERROR[400]: Произошла ошибка MethodArgumentTypeMismatchException: ", e.getMessage());
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse forbidden(final ForbiddenException e) {
+        return new ErrorResponse("ERROR[403]: Произошла ошибка ForbiddenException: ", e.getMessage());
+    }
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse notFoundException(final NotFoundException e) {
+    public ErrorResponse notFound(final NotFoundException e) {
         return new ErrorResponse("ERROR[404]: Произошла ошибка NotFoundException: ", e.getMessage());
     }
 
@@ -66,7 +69,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse throwableError(final Throwable e) {
+    public ErrorResponse throwable(final Throwable e) {
         return new ErrorResponse("ERROR[500]: Произошла ошибка Throwable: ", e.getMessage());
     }
 }
