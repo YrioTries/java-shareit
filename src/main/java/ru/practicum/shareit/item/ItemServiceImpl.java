@@ -31,19 +31,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item create(Item item) {
-        if (item.getOwner() == null)
+    public Item create(Long userId, Item item) {
+        if (userId == null)
             throw new NotFoundException("Не указан владелец предмета при создании");
 
-        if (!storage.isUserExist(item.getOwner().getId())) {
+        if (!storage.isUserExist(userId))
             throw new NotFoundException("Владелец не найден");
-        }
 
         return storage.create(item);
     }
 
     @Override
-    public Item update(Long itemId, Map<String, Object> updates) {
+    public Item update(Long itemId, Long userId, Map<String, Object> updates) {
 
         Item existingItem = storage.getItemById(itemId);
 
@@ -51,10 +50,16 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Item with id " + itemId + " not found");
         }
 
-        if (!existingItem.getOwner().getId().equals(((User) updates.get("Owner")).getId())) {
+        if (userId == null)
+            throw new NotFoundException("Не указан владелец предмета при создании");
+
+        if (!storage.isUserExist(userId))
+            throw new NotFoundException("Владелец не найден");
+
+        if (!existingItem.getOwner().getId().equals(userId)) {
             throw new ForbiddenException("Only item owner can update it");
         }
 
-        return storage.update(itemId, updates);
+        return storage.update(itemId, userId, updates);
     }
 }

@@ -11,7 +11,7 @@ public interface ItemService {
 
     List<Item> getItemByUserId(long id);
 
-    Item create(Item item);
+    Item create(Long userId, Item item);
 
-    Item update(Long itemId, Map<String, Object> updates);
+    Item update(Long itemId, Long userId, Map<String, Object> updates);
 }

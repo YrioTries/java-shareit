@@ -26,7 +26,6 @@ public class Item {
     @NotNull(message = "Статус доступности обязателен")
     private Boolean available;
 
-    @NotNull(message = "Владелец обязателен")
     private User owner;
 
     private ItemRequest request;

@@ -69,7 +69,7 @@ public class InMemoryItemStorage {
         return newItem;  // Возвращаем объект с id
     }
 
-    public Item update(long itemId, Map<String, Object> updates) {
+    public Item update(long itemId, Long userId, Map<String, Object> updates) {
         Item existingItem = itemMap.get(itemId);
 
         if (updates.containsKey("name")) {
@@ -82,6 +82,7 @@ public class InMemoryItemStorage {
             existingItem.setAvailable((Boolean) updates.get("available"));
         }
         existingItem.setId(itemId);
+        existingItem.setOwner(userStorage.getUser(userId));
 
         itemMap.put(existingItem.getId(), existingItem);
         return existingItem;

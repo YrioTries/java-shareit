@@ -37,14 +37,16 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Item create(@Valid Item item) {
-        return service.create(item);
+    public Item create(@RequestHeader("X-Sharer-User-Id") Long userId,
+                       @RequestBody @Valid Item item){
+        return service.create(userId, item);
     }
 
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
     public Item update(@PathVariable Long itemId,
+                       @RequestHeader("X-Sharer-User-Id") Long userId,
                        @RequestBody @Valid Map<String, Object> updates) {
-        return service.update(itemId, updates);
+        return service.update(itemId, userId, updates);
     }
 }
