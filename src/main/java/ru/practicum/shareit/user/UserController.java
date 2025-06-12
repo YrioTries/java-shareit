@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.model.User;
@@ -23,6 +22,12 @@ public class UserController {
         this.service = service;
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public User getUser(@PathVariable Long id) {
+        return service.getUser(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody @Valid User user) {
@@ -31,14 +36,14 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public User update(@PathVariable long id,
+    public User update(@PathVariable Long id,
                        @RequestBody @Valid Map<String, Object> updates) {
         return service.update(id, updates);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable Long id) {
         service.delete(id);
     }
 
