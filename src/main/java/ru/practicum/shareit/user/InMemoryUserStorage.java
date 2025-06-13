@@ -42,7 +42,7 @@ public class InMemoryUserStorage {
                 user.getEmail()
         );
 
-        userMap.put(newUser.getId(), user);
+        userMap.put(newUser.getId(), newUser);
 
         return newUser;
     }

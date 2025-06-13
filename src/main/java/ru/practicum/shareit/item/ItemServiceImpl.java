@@ -2,10 +2,8 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 import java.util.Map;
@@ -21,24 +19,36 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItemById(long id) {
+    public Item getItemById(Long id) {
+        if (!storage.isItemExist(id))
+            throw new NotFoundException("Предмета с таким id нет");
+
         return storage.getItemById(id);
     }
 
     @Override
-    public List<Item> getItemByUserId(long id) {
-        return storage.getItemByUserId(id);
-    }
-
-    @Override
-    public Item create(Long userId, Item item) {
-        if (userId == null)
-            throw new NotFoundException("Не указан владелец предмета при создании");
+    public List<Item> getItemByUserId(Long userId) {
 
         if (!storage.isUserExist(userId))
             throw new NotFoundException("Владелец не найден");
 
-        return storage.create(item);
+        return storage.getItemsByUserId(userId);
+    }
+
+    @Override
+    public List<String> searchText(String text) {
+        return storage.searchText(text);
+    }
+
+    @Override
+    public Item create(Long ownerId, Item item) {
+        if (ownerId == null)
+            throw new NotFoundException("Не указан владелец предмета при создании");
+
+        if (!storage.isUserExist(ownerId))
+            throw new NotFoundException("Владелец не найден");
+
+        return storage.create(ownerId, item);
     }
 
     @Override
@@ -53,12 +63,9 @@ public class ItemServiceImpl implements ItemService {
         if (userId == null)
             throw new NotFoundException("Не указан владелец предмета при создании");
 
+
         if (!storage.isUserExist(userId))
             throw new NotFoundException("Владелец не найден");
-
-        if (!existingItem.getOwner().getId().equals(userId)) {
-            throw new ForbiddenException("Only item owner can update it");
-        }
 
         return storage.update(itemId, userId, updates);
     }

@@ -7,9 +7,11 @@ import java.util.Map;
 
 public interface ItemService {
 
-    Item getItemById(long id);
+    Item getItemById(Long id);
 
-    List<Item> getItemByUserId(long id);
+    List<Item> getItemByUserId(Long id);
+
+    public List<String> searchText(String text);
 
     Item create(Long userId, Item item);
 

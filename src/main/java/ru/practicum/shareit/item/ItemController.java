@@ -25,15 +25,21 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Item getByItemId(@RequestParam long id) {
+    public Item getByItemId(@PathVariable Long id) {
         return service.getItemById(id);
     }
 
-//    @GetMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<Item> getItemByUserId(@RequestParam long id) {
-//        return service.getItemByUserId(id);
-//    }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Item> getItemByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return service.getItemByUserId(userId);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<String> searchText(@RequestParam("text") String text) {
+        return service.searchText(text);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

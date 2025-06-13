@@ -2,18 +2,14 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exception.InternalServerException;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.InMemoryUserStorage;
 import ru.practicum.shareit.user.model.User;
 
-import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class InMemoryItemStorage {
@@ -41,32 +37,49 @@ public class InMemoryItemStorage {
         return new ArrayList<>(itemMap.keySet());
     }
 
-    public Item getItemById(long id) {
+    public boolean isItemExist(Long id) {
+        return itemMap.containsKey(id);
+    }
+
+    public Item getItemById(Long id) {
         return itemMap.get(id);
     }
 
-    public List<Item> getItemByUserId(long id) {
+    public List<Item> getItemsByUserId(Long id) {
         return itemMap.values().stream()
-                .filter(item -> item.getOwner().getId() == id)
+                .filter(item -> item.getOwner().getId().equals(id))
                 .toList();
     }
 
-    public boolean isUserExist(long userId) {
+    public List<String> searchText(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return List.of();
+        }
+
+        return itemMap.values()
+                .stream()
+                .map(Item::getDescription)
+                .map(String::trim)
+                .filter(s -> s.toLowerCase().contains(text.toLowerCase()))
+                .toList();
+    }
+
+    public boolean isUserExist(Long userId) {
         return userStorage.isUserExist(userId);
     }
 
-    public Item create(Item item) {
+    public Item create(Long ownerId, Item item) {
         Item newItem = new Item(
-                idCounter++,  // Генерация нового ID
+                idCounter++,
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getOwner(),
+                userStorage.getUser(ownerId),
                 item.getRequest()
         );
 
         itemMap.put(newItem.getId(), newItem);
-        return newItem;  // Возвращаем объект с id
+        return newItem;
     }
 
     public Item update(long itemId, Long userId, Map<String, Object> updates) {
