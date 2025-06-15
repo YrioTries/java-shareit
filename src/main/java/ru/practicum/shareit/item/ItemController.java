@@ -44,7 +44,7 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Item create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                       @RequestBody @Valid Item item){
+                       @RequestBody @Valid Item item) {
         return service.create(userId, item);
     }
 

@@ -54,14 +54,14 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException("Пользователь с такой почтой уже существует");
         }
 
-        if(!storage.getUserIds().contains(id))
+        if (!storage.getUserIds().contains(id))
             throw new NotFoundException("Невозможно обновить пользователя которого нет");
         return storage.update(id, updates);
     }
 
     @Override
     public void delete(long id) {
-        if(!storage.getUserIds().contains(id))
+        if (!storage.getUserIds().contains(id))
             throw new NotFoundException("Невозможно удалить пользователя которого нет");
         storage.delete(id);
     }

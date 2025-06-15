@@ -35,7 +35,7 @@ public class InMemoryUserStorage {
         return userMap.get(id);
     }
 
-    public User create (User user) {
+    public User create(User user) {
         User newUser = new User(
                 idCounter++,
                 user.getName(),
@@ -51,7 +51,7 @@ public class InMemoryUserStorage {
         User updatedUser = userMap.get(id);
         if (updates.containsKey("name"))
             updatedUser.setName((String) updates.get("name"));
-        if(updates.containsKey("email"))
+        if (updates.containsKey("email"))
             updatedUser.setEmail((String) updates.get("email"));
 
         updatedUser.setId(id);
