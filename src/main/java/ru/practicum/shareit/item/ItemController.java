@@ -37,7 +37,7 @@ public class ItemController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<String> searchText(@RequestParam("text") String text) {
+    public List<Item> searchText(@RequestParam("text") String text) {
         return service.searchText(text);
     }
 

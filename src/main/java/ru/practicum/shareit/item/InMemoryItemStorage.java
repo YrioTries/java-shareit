@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.InMemoryUserStorage;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,16 +50,19 @@ public class InMemoryItemStorage {
                 .toList();
     }
 
-    public List<String> searchText(String text) {
+    public List<Item> searchText(String text) {
         if (text == null || text.trim().isEmpty()) {
             return List.of();
         }
 
+        String searchText = text.trim().toUpperCase();
+
         return itemMap.values()
                 .stream()
-                .map(Item::getDescription)
-                .map(String::trim)
-                .filter(s -> s.toLowerCase().contains(text.toLowerCase()))
+                .filter(item -> {
+                    String itemName = item.getName() != null ? item.getName().trim().toUpperCase() : "";
+                    return itemName.contains(searchText) && item.getAvailable();
+                })
                 .toList();
     }
 
@@ -100,5 +102,4 @@ public class InMemoryItemStorage {
         itemMap.put(existingItem.getId(), existingItem);
         return existingItem;
     }
-
 }

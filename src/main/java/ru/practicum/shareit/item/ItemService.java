@@ -11,7 +11,7 @@ public interface ItemService {
 
     List<Item> getItemByUserId(Long id);
 
-    public List<String> searchText(String text);
+    List<Item> searchText(String text);
 
     Item create(Long userId, Item item);
 

@@ -36,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<String> searchText(String text) {
+    public List<Item> searchText(String text) {
         return storage.searchText(text);
     }
 
