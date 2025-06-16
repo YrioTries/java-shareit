@@ -3,6 +3,8 @@ package ru.practicum.shareit.item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -19,15 +21,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItemById(Long id) {
+    public ItemDto getItemById(Long id) {
         if (!storage.isItemExist(id))
             throw new NotFoundException("Предмета с таким id нет");
 
-        return storage.getItemById(id);
+        return ItemMapper.toItemDto(storage.getItemById(id));
     }
 
     @Override
-    public List<Item> getItemByUserId(Long userId) {
+    public List<ItemDto> getItemByUserId(Long userId) {
 
         if (!storage.isUserExist(userId))
             throw new NotFoundException("Владелец не найден");
@@ -36,12 +38,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> searchText(String text) {
+    public List<ItemDto> searchText(String text) {
         return storage.searchText(text);
     }
 
     @Override
-    public Item create(Long ownerId, Item item) {
+    public ItemDto create(Long ownerId, Item item) {
         if (ownerId == null)
             throw new NotFoundException("Не указан владелец предмета при создании");
 
@@ -52,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item update(Long itemId, Long userId, Map<String, Object> updates) {
+    public ItemDto update(Long itemId, Long userId, Map<String, Object> updates) {
 
         Item existingItem = storage.getItemById(itemId);
 

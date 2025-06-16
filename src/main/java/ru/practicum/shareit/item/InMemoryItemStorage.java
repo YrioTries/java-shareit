@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.InMemoryUserStorage;
 
@@ -44,13 +46,14 @@ public class InMemoryItemStorage {
         return itemMap.get(id);
     }
 
-    public List<Item> getItemsByUserId(Long id) {
+    public List<ItemDto> getItemsByUserId(Long id) {
         return itemMap.values().stream()
                 .filter(item -> item.getOwner().getId().equals(id))
+                .map(ItemMapper::toItemDto)
                 .toList();
     }
 
-    public List<Item> searchText(String text) {
+    public List<ItemDto > searchText(String text) {
         if (text == null || text.trim().isEmpty()) {
             return List.of();
         }
@@ -63,6 +66,7 @@ public class InMemoryItemStorage {
                     String itemName = item.getName() != null ? item.getName().trim().toUpperCase() : "";
                     return itemName.contains(searchText) && item.getAvailable();
                 })
+                .map(ItemMapper::toItemDto)
                 .toList();
     }
 
@@ -70,7 +74,7 @@ public class InMemoryItemStorage {
         return userStorage.isUserExist(userId);
     }
 
-    public Item create(Long ownerId, Item item) {
+    public ItemDto create(Long ownerId, Item item) {
         Item newItem = new Item(
                 idCounter++,
                 item.getName(),
@@ -81,10 +85,10 @@ public class InMemoryItemStorage {
         );
 
         itemMap.put(newItem.getId(), newItem);
-        return newItem;
+        return ItemMapper.toItemDto(newItem);
     }
 
-    public Item update(long itemId, Long userId, Map<String, Object> updates) {
+    public ItemDto update(long itemId, Long userId, Map<String, Object> updates) {
         Item existingItem = itemMap.get(itemId);
 
         if (updates.containsKey("name")) {
@@ -100,6 +104,6 @@ public class InMemoryItemStorage {
         existingItem.setOwner(userStorage.getUser(userId));
 
         itemMap.put(existingItem.getId(), existingItem);
-        return existingItem;
+        return ItemMapper.toItemDto(existingItem);
     }
 }

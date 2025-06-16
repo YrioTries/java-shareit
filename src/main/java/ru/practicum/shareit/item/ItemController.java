@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -22,32 +23,32 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Item getByItemId(@PathVariable Long id) {
+    public ItemDto getByItemId(@PathVariable Long id) {
         return service.getItemById(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Item> getItemByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getItemByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
         return service.getItemByUserId(userId);
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<Item> searchText(@RequestParam("text") String text) {
+    public List<ItemDto> searchText(@RequestParam("text") String text) {
         return service.searchText(text);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Item create(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
                        @RequestBody @Valid Item item) {
         return service.create(userId, item);
     }
 
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public Item update(@PathVariable Long itemId,
+    public ItemDto update(@PathVariable Long itemId,
                        @RequestHeader("X-Sharer-User-Id") Long userId,
                        @RequestBody @Valid Map<String, Object> updates) {
         return service.update(itemId, userId, updates);

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -7,13 +8,13 @@ import java.util.Map;
 
 public interface ItemService {
 
-    Item getItemById(Long id);
+    ItemDto getItemById(Long id);
 
-    List<Item> getItemByUserId(Long id);
+    List<ItemDto> getItemByUserId(Long id);
 
-    List<Item> searchText(String text);
+    List<ItemDto> searchText(String text);
 
-    Item create(Long userId, Item item);
+    ItemDto create(Long userId, Item item);
 
-    Item update(Long itemId, Long userId, Map<String, Object> updates);
+    ItemDto update(Long itemId, Long userId, Map<String, Object> updates);
 }
