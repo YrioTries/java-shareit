@@ -53,7 +53,7 @@ public class InMemoryItemStorage {
                 .toList();
     }
 
-    public List<ItemDto > searchText(String text) {
+    public List<ItemDto> searchText(String text) {
         if (text == null || text.trim().isEmpty()) {
             return List.of();
         }
