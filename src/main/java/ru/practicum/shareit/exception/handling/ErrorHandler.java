@@ -67,9 +67,9 @@ public class ErrorHandler {
         return new ErrorResponse("ERROR[500]: Произошла ошибка InternalServerException: ", e.getMessage());
     }
 
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse throwable(final Throwable e) {
+    public ErrorResponse exception(final Exception e) {
         return new ErrorResponse("ERROR[500]: Произошла ошибка Throwable: ", e.getMessage());
     }
 }
