@@ -8,9 +8,6 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.Map;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
