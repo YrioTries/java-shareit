@@ -2,6 +2,8 @@ package ru.practicum.shareit.user;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
@@ -23,8 +25,11 @@ public class InMemoryUserStorage {
         return new ArrayList<Long>(userMap.keySet());
     }
 
-    public ArrayList<User> getUserList() {
-        return new ArrayList<User>(userMap.values());
+    public ArrayList<UserDto> getUserList() {
+        return new ArrayList<UserDto>(
+                userMap.values().stream()
+                .map(UserMapper::toUserDto)
+                .toList());
     }
 
     public boolean isUserExist(long id) {
@@ -35,7 +40,7 @@ public class InMemoryUserStorage {
         return userMap.get(id);
     }
 
-    public User create(User user) {
+    public UserDto create(UserDto user) {
         User newUser = new User(
                 idCounter++,
                 user.getName(),
@@ -44,10 +49,10 @@ public class InMemoryUserStorage {
 
         userMap.put(newUser.getId(), newUser);
 
-        return newUser;
+        return UserMapper.toUserDto(newUser);
     }
 
-    public User update(Long id, Map<String, Object> updates) {
+    public UserDto update(Long id, Map<String, Object> updates) {
         User updatedUser = userMap.get(id);
         if (updates.containsKey("name"))
             updatedUser.setName((String) updates.get("name"));
@@ -58,7 +63,7 @@ public class InMemoryUserStorage {
 
         userMap.put(updatedUser.getId(), updatedUser);
 
-        return updatedUser;
+        return UserMapper.toUserDto(updatedUser);
     }
 
     public void delete(long id) {

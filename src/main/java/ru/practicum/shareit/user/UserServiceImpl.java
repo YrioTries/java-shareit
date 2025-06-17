@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -21,19 +22,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ArrayList<User> getUserList() {
+    public ArrayList<UserDto> getUserList() {
         return storage.getUserList();
     }
 
-    public User getUser(Long id) {
+    public UserDto getUser(Long id) {
         if (id == null || !storage.isUserExist(id))
             throw new NotFoundException("Пользователя с таким id не существует");
 
-        return storage.getUser(id);
+        return UserMapper.toUserDto(storage.getUser(id));
     }
 
     @Override
-    public User create(User user) {
+    public UserDto create(UserDto user) {
         if (storage.getUserList()
                 .stream()
                 .anyMatch(userStream -> userStream.getEmail().equals(user.getEmail()))) {
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(Long id, Map<String, Object> updates) {
+    public UserDto update(Long id, Map<String, Object> updates) {
         if (storage.getUserList()
                 .stream()
                 .anyMatch(userStream -> userStream.getEmail().equals(updates.get("email")))) {

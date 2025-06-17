@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto create(Long ownerId, Item item) {
+    public ItemDto create(Long ownerId, ItemDto item) {
         if (ownerId == null)
             throw new NotFoundException("Не указан владелец предмета при создании");
 

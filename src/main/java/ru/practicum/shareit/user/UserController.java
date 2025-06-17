@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.Map;
 
@@ -21,19 +21,19 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public User getUser(@PathVariable Long id) {
+    public UserDto getUser(@PathVariable Long id) {
         return service.getUser(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody @Valid User user) {
+    public UserDto create(@RequestBody @Valid UserDto user) {
         return service.create(user);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public User update(@PathVariable Long id,
+    public UserDto update(@PathVariable Long id,
                        @RequestBody @Valid Map<String, Object> updates) {
         return service.update(id, updates);
     }

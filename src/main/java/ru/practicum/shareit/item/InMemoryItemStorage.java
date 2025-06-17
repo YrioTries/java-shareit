@@ -74,14 +74,14 @@ public class InMemoryItemStorage {
         return userStorage.isUserExist(userId);
     }
 
-    public ItemDto create(Long ownerId, Item item) {
+    public ItemDto create(Long ownerId, ItemDto item) {
         Item newItem = new Item(
                 idCounter++,
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
                 userStorage.getUser(ownerId),
-                item.getRequest()
+                null
         );
 
         itemMap.put(newItem.getId(), newItem);
