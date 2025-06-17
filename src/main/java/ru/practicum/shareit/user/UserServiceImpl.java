@@ -2,12 +2,16 @@ package ru.practicum.shareit.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private final InMemoryUserStorage storage;
@@ -17,33 +21,49 @@ public class UserServiceImpl implements UserService {
         this.storage = storage;
     }
 
-    public ArrayList<User> get() {
-        return storage.get();
+    @Override
+    public ArrayList<UserDto> getUserList() {
+        return storage.getUserList();
     }
 
-    public User create(User user) {
-        if (storage.getUserIds().contains(user.getId()))
-            throw new ConflictException("Такой пользователь уже существует");
+    public UserDto getUser(Long id) {
+        if (id == null || !storage.isUserExist(id))
+            throw new NotFoundException("Пользователя с таким id не существует");
 
-        if (storage.get()
+        return UserMapper.toUserDto(storage.getUser(id));
+    }
+
+    @Override
+    public UserDto create(UserDto user) {
+        if (storage.getUserList()
                 .stream()
                 .anyMatch(userStream -> userStream.getEmail().equals(user.getEmail()))) {
             throw new ConflictException("Пользователь с такой почтой уже существует");
         }
 
-        if (user.getEmail() == null)
-            throw new NotFoundException("Создание пользователя без почты");
+        if (storage.getUserIds().contains(user.getId()))
+            throw new ConflictException("Такой пользователь уже существует");
 
         return storage.create(user);
     }
 
-    public User update(User user) {
-        if(!storage.getUserIds().contains(user.getId()))
+    @Override
+    public UserDto update(Long id, Map<String, Object> updates) {
+        if (storage.getUserList()
+                .stream()
+                .anyMatch(userStream -> userStream.getEmail().equals(updates.get("email")))) {
+            throw new ConflictException("Пользователь с такой почтой уже существует");
+        }
+
+        if (!storage.getUserIds().contains(id))
             throw new NotFoundException("Невозможно обновить пользователя которого нет");
-        return storage.update(user);
+        return storage.update(id, updates);
     }
 
+    @Override
     public void delete(long id) {
+        if (!storage.getUserIds().contains(id))
+            throw new NotFoundException("Невозможно удалить пользователя которого нет");
         storage.delete(id);
     }
 }
