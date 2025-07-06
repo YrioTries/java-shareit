@@ -5,19 +5,26 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
 @Entity
-@Table(name = "users")
 @AllArgsConstructor
+@Getter @Setter @ToString
+@Table(name = "users", schema = "public")
 public class User {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
     @Email
     @NotBlank
     @NotEmpty
+    @Column(name = "email", nullable = false)
     private String email;
 }
