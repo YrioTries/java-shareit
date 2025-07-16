@@ -2,12 +2,12 @@ package ru.practicum.shareit.user;
 
 import ru.practicum.shareit.user.dto.UserDto;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
 
-    ArrayList<UserDto> getUserList();
+    List<UserDto> getUserList();
 
     UserDto getUser(Long id);
 

@@ -1,69 +1,79 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private final InMemoryUserStorage storage;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public UserServiceImpl(@Qualifier("InMemoryUserStorage") InMemoryUserStorage storage) {
-        this.storage = storage;
+    @Override
+    public List<UserDto> getUserList() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ArrayList<UserDto> getUserList() {
-        return storage.getUserList();
-    }
-
     public UserDto getUser(Long id) {
-        if (id == null || !storage.isUserExist(id))
-            throw new NotFoundException("Пользователя с таким id не существует");
-
-        return UserMapper.toUserDto(storage.getUser(id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Пользователя с таким id не существует"));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto create(UserDto user) {
-        if (storage.getUserList()
-                .stream()
-                .anyMatch(userStream -> userStream.getEmail().equals(user.getEmail()))) {
+    @Transactional
+    public UserDto create(UserDto userDto) {
+        if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new ConflictException("Пользователь с такой почтой уже существует");
         }
 
-        if (storage.getUserIds().contains(user.getId()))
-            throw new ConflictException("Такой пользователь уже существует");
-
-        return storage.create(user);
+        User user = UserMapper.toUser(userDto);
+        User savedUser = userRepository.save(user);
+        return UserMapper.toUserDto(savedUser);
     }
 
     @Override
+    @Transactional
     public UserDto update(Long id, Map<String, Object> updates) {
-        if (storage.getUserList()
-                .stream()
-                .anyMatch(userStream -> userStream.getEmail().equals(updates.get("email")))) {
-            throw new ConflictException("Пользователь с такой почтой уже существует");
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Невозможно обновить пользователя которого нет"));
+
+        if (updates.containsKey("email")) {
+            String newEmail = (String) updates.get("email");
+            if (!newEmail.equals(user.getEmail()) && userRepository.existsByEmailAndIdNot(newEmail, id)) {
+                throw new ConflictException("Пользователь с такой почтой уже существует");
+            }
+            user.setEmail(newEmail);
         }
 
-        if (!storage.getUserIds().contains(id))
-            throw new NotFoundException("Невозможно обновить пользователя которого нет");
-        return storage.update(id, updates);
+        if (updates.containsKey("name")) {
+            user.setName((String) updates.get("name"));
+        }
+
+        User updatedUser = userRepository.save(user);
+        return UserMapper.toUserDto(updatedUser);
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
-        if (!storage.getUserIds().contains(id))
+        if (!userRepository.existsById(id)) {
             throw new NotFoundException("Невозможно удалить пользователя которого нет");
-        storage.delete(id);
+        }
+        userRepository.deleteById(id);
     }
 }
