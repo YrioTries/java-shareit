@@ -23,8 +23,9 @@ CREATE TABLE IF NOT EXISTS bookings (
     end_time TIMESTAMP NOT NULL,
     item_id BIGINT NOT NULL,
     booker_id BIGINT NOT NULL,
-    status VARCHAR(20) NOT NULL,  -- Для enum Status (например, "APPROVED", "REJECTED")
+    status VARCHAR(20) NOT NULL,
     CONSTRAINT pk_booking PRIMARY KEY (id),
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id),
-    CONSTRAINT fk_booker FOREIGN KEY (booker_id) REFERENCES users(id)
+    CONSTRAINT fk_booker FOREIGN KEY (booker_id) REFERENCES users(id),
+    CONSTRAINT check_valid_booking_time CHECK (end_time > start_time)
 );
