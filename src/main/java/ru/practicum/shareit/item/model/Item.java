@@ -8,20 +8,22 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 @Entity
-@AllArgsConstructor
-@Getter @Setter @ToString
 @Table(name = "items", schema = "public")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     @NotBlank(message = "Название не может быть пустым")
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     @NotBlank(message = "Описание не может быть пустым")
     private String description;
 
@@ -29,9 +31,11 @@ public class Item {
     @NotNull(message = "Статус доступности обязателен")
     private Boolean available;
 
-    @Column(name = "owner")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @Column(name = "request")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
     private ItemRequest request;
 }
