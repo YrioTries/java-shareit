@@ -1,8 +1,8 @@
 package ru.practicum.shareit.booking.dto;
 
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.item.model.dto.ItemMapper;
+import ru.practicum.shareit.user.model.dto.UserMapper;
 
 public class BookingMapper {
     public static BookingResponseDto toResponseDto(Booking booking) {
