@@ -19,10 +19,4 @@ public class UserDto {
     @NotEmpty
     private String email;
 
-    public static UserDto from(User user) {
-        UserDto dto = new UserDto();
-        dto.name = user.getName();
-        dto.email = user.getEmail();
-        return dto;
-    }
 }
