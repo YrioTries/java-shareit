@@ -10,11 +10,14 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.enums.Status;
-import ru.practicum.shareit.exception.*;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,19 +27,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
+
     private final BookingRepository bookingRepository;
     private final UserService userService;
     private final ItemService itemService;
 
     @Override
     @Transactional
-    public BookingResponseDto createBooking(BookingRequestDto bookingDto, Long userId) {
-        User booker = userService.getUserById(userId);
-        Item item = itemService.getItemById(bookingDto.getItemId());
+    public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, Long userId) {
+        User booker = UserMapper.toUser(userService.getUser(userId));
+        Item item = ItemMapper.toItem(itemService.getItemById(bookingRequestDto.getItemId()));
+        validateBooking(bookingRequestDto, item, booker);
 
-        validateBooking(bookingDto, item, booker);
-
-        Booking booking = BookingMapper.toBooking(bookingDto, item, booker);
+        Booking booking = BookingMapper.toBooking(bookingRequestDto, item, booker);
         booking.setStatus(Status.WAITING);
 
         return BookingMapper.toResponseDto(bookingRepository.save(booking));
@@ -47,15 +50,12 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto approveBooking(Long bookingId, Boolean approved, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
-
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new ValidationException("Подтверждать бронирование может только владелец вещи");
         }
-
         if (booking.getStatus() != Status.WAITING) {
             throw new ValidationException("Бронирование уже было обработано");
         }
-
         booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
         return BookingMapper.toResponseDto(bookingRepository.save(booking));
     }
@@ -64,12 +64,10 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto getBookingById(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
-
         if (!booking.getBooker().getId().equals(userId) &&
                 !booking.getItem().getOwner().getId().equals(userId)) {
             throw new ValidationException("Просмотр бронирования доступен только автору или владельцу");
         }
-
         return BookingMapper.toResponseDto(booking);
     }
 
@@ -78,7 +76,6 @@ public class BookingServiceImpl implements BookingService {
         userService.validateUserExists(userId);
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
         LocalDateTime now = LocalDateTime.now();
-
         switch (state.toUpperCase()) {
             case "CURRENT":
                 return bookingRepository.findCurrentByBookerId(userId, now, pageable).stream()
@@ -112,7 +109,6 @@ public class BookingServiceImpl implements BookingService {
         userService.validateUserExists(ownerId);
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("start").descending());
         LocalDateTime now = LocalDateTime.now();
-
         switch (state.toUpperCase()) {
             case "CURRENT":
                 return bookingRepository.findCurrentByOwnerId(ownerId, now, pageable).stream()
@@ -141,25 +137,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    @Override
-    public void validateBookingDates(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null) {
-            throw new ValidationException("Даты бронирования должны быть указаны");
-        }
-        if (end.isBefore(start)) {
-            throw new ValidationException("Дата окончания бронирования должна быть после даты начала");
-        }
-        if (start.isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Дата начала бронирования должна быть в будущем");
-        }
-        if (start.equals(end)) {
-            throw new ValidationException("Даты начала и окончания бронирования не могут совпадать");
-        }
-    }
-
     private void validateBooking(BookingRequestDto bookingDto, Item item, User booker) {
-        validateBookingDates(bookingDto.getStart(), bookingDto.getEnd());
-
         if (item.getOwner().getId().equals(booker.getId())) {
             throw new ValidationException("Владелец не может бронировать свою вещь");
         }

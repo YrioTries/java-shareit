@@ -76,4 +76,11 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
+    @Override
+    public void validateUserExists(Long id) throws NotFoundException {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("Пользователь с id " + id + " не найден");
+        }
+    }
 }
