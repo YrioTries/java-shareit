@@ -1,13 +1,13 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.entity.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.entity.user.model.User;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.model.dto.UserDto;
-import ru.practicum.shareit.user.model.dto.UserMapper;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.entity.user.model.dto.UserDto;
+import ru.practicum.shareit.entity.user.model.dto.UserMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -28,10 +28,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(Long id) {
+    public UserDto getUserDto(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователя с таким id не существует"));
         return UserMapper.toUserDto(user);
+    }
+
+    @Override
+    public User getUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Пользователя с таким id не существует"));
     }
 
     @Override
