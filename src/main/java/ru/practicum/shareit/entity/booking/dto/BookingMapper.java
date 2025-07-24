@@ -1,11 +1,12 @@
-package ru.practicum.shareit.booking.dto;
+package ru.practicum.shareit.entity.booking.dto;
 
-import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.enums.Status;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.entity.booking.Booking;
+
+import ru.practicum.shareit.entity.item.model.Item;
+
+import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
+import ru.practicum.shareit.entity.user.model.User;
+import ru.practicum.shareit.entity.user.model.dto.UserMapper;
 
 public class BookingMapper {
 

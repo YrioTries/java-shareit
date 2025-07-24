@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.entity.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -6,18 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.booking.dto.BookingRequestDto;
-import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.booking.enums.Status;
+import ru.practicum.shareit.entity.booking.dto.BookingMapper;
+import ru.practicum.shareit.entity.booking.dto.BookingRequestDto;
+import ru.practicum.shareit.entity.booking.dto.BookingResponseDto;
+import ru.practicum.shareit.entity.booking.enums.Status;
+import ru.practicum.shareit.entity.user.model.dto.UserMapper;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.entity.item.ItemService;
+import ru.practicum.shareit.entity.item.model.Item;
+import ru.practicum.shareit.entity.user.UserService;
+import ru.practicum.shareit.entity.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,8 +34,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, Long userId) {
-        User booker = UserMapper.toUser(userService.getUser(userId));
-        Item item = ItemMapper.toItem(itemService.getItemById(bookingRequestDto.getItemId()));
+        User booker = UserMapper.toUser(userService.getUserDto(userId));
+        Item item = itemService.getItemById(bookingRequestDto.getItemId();
+
         validateBooking(bookingRequestDto, item, booker);
 
         Booking booking = BookingMapper.toBooking(bookingRequestDto, item, booker);
