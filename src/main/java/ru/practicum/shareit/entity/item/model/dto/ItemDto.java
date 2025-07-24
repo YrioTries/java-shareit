@@ -1,11 +1,11 @@
-package ru.practicum.shareit.item.model.dto;
+package ru.practicum.shareit.entity.item.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.entity.item.model.Item;
 
 @Data
 @AllArgsConstructor

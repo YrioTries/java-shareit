@@ -1,10 +1,10 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.entity.user;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.model.dto.UserDto;
+import ru.practicum.shareit.entity.user.model.dto.UserDto;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class UserController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUser(@PathVariable Long id) {
-        return service.getUser(id);
+        return service.getUserDto(id);
     }
 
     @PostMapping

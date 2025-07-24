@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.item;
+package ru.practicum.shareit.entity.item;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

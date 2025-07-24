@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.enums;
+package ru.practicum.shareit.entity.booking.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

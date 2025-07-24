@@ -1,6 +1,6 @@
-package ru.practicum.shareit.item.model.dto;
+package ru.practicum.shareit.entity.item.model.dto;
 
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.entity.item.model.Item;
 
 public class ItemMapper {
 

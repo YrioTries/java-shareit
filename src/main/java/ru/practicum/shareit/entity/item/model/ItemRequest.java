@@ -1,13 +1,16 @@
-package ru.practicum.shareit.request.item;
+package ru.practicum.shareit.entity.item.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.entity.user.model.User;
 
 import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-item-requests.
  */
+
 @Data
 public class ItemRequest {
     private long id;

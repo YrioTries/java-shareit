@@ -1,11 +1,11 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.entity.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.model.dto.ItemDto;
-import ru.practicum.shareit.item.model.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.InMemoryUserStorage;
+import ru.practicum.shareit.entity.item.model.dto.ItemDto;
+import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
+import ru.practicum.shareit.entity.item.model.Item;
+import ru.practicum.shareit.entity.user.InMemoryUserStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +81,7 @@ public class InMemoryItemStorage {
                 item.getDescription(),
                 item.getAvailable(),
                 userStorage.getUser(ownerId),
-                null
+                1L
         );
 
         itemMap.put(newItem.getId(), newItem);

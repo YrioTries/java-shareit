@@ -1,10 +1,10 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.entity.booking;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.shareit.booking.enums.Status;
+import ru.practicum.shareit.entity.booking.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -83,4 +83,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("itemId") Long itemId,
             @Param("now") LocalDateTime now,
             Pageable pageable);
+
+    @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM Booking b WHERE b.booker.id = :bookerId AND b.item.id = :itemId AND b.end < :endDate")
+    boolean existsByBookerIdAndItemIdAndEndIsBefore(
+            @Param("bookerId") Long bookerId,
+            @Param("itemId") Long itemId,
+            @Param("endDate") LocalDateTime endDate);
 }

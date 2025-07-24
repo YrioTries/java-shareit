@@ -1,10 +1,12 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.entity.item;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.model.dto.ItemDto;
+import ru.practicum.shareit.entity.comment.model.CommentDto;
+import ru.practicum.shareit.entity.item.model.dto.ItemDto;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,7 @@ public class ItemController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto getByItemId(@PathVariable Long id) {
-        return service.getItemById(id);
+        return service.getItemDtoById(id);
     }
 
     @GetMapping
@@ -52,4 +54,14 @@ public class ItemController {
                        @RequestBody @Valid Map<String, Object> updates) {
         return service.update(itemId, userId, updates);
     }
+
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CommentDto> addComment(
+            @PathVariable Long itemId,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestBody @Valid CommentDto commentDto) {
+        return ResponseEntity.ok(service.addComment(userId, itemId, commentDto));
+    }
+
 }
