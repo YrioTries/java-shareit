@@ -1,16 +1,39 @@
 package ru.practicum.shareit.entity.item.model.dto;
 
+import ru.practicum.shareit.entity.booking.dto.BookingDto;
+import ru.practicum.shareit.entity.comment.model.CommentDto;
 import ru.practicum.shareit.entity.item.model.Item;
+
+import java.util.List;
 
 public class ItemMapper {
 
     public static ItemDto toItemDto(Item item) {
-        return new ItemDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getAvailable()
-        );
+        ItemDto dto = new ItemDto();
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setDescription(item.getDescription());
+        dto.setAvailable(item.getAvailable());
+        dto.setLastBooking(null);
+        dto.setNextBooking(null);
+        dto.setComments(null);
+        return dto;
+    }
+
+
+    public static ItemDto toItemDto(Item item,
+                                    BookingDto lastBooking,
+                                    BookingDto nextBooking,
+                                    List<CommentDto> comments) {
+        ItemDto dto = new ItemDto();
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setDescription(item.getDescription());
+        dto.setAvailable(item.getAvailable());
+        dto.setLastBooking(lastBooking);
+        dto.setNextBooking(nextBooking);
+        dto.setComments(comments);
+        return dto;
     }
 
     public static Item toItem(ItemDto itemDto) {

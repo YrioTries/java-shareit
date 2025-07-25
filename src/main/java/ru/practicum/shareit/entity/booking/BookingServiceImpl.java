@@ -34,8 +34,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, Long userId) {
-        User booker = UserMapper.toUser(userService.getUserDto(userId));
-        Item item = itemService.getItemById(bookingRequestDto.getItemId();
+        User booker = userService.getUser(userId);
+        Item item = itemService.getItemById(bookingRequestDto.getItemId());
 
         validateBooking(bookingRequestDto, item, booker);
 

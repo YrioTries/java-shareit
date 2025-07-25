@@ -21,5 +21,7 @@ public interface ItemService {
 
     ItemDto update(Long itemId, Long userId, Map<String, Object> updates);
 
+    ItemDto getItemDtoWithBookingsAndComments(Long itemId);
+
     CommentDto addComment(Long userId, Long itemId, CommentDto commentDto);
 }

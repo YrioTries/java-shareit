@@ -24,8 +24,8 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto getByItemId(@PathVariable Long id) {
-        return service.getItemDtoById(id);
+    public ItemDto getById(@PathVariable Long id) {
+        return service.getItemDtoWithBookingsAndComments(id);
     }
 
     @GetMapping
@@ -57,11 +57,11 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CommentDto> addComment(
+    public CommentDto addComment(
             @PathVariable Long itemId,
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestBody @Valid CommentDto commentDto) {
-        return ResponseEntity.ok(service.addComment(userId, itemId, commentDto));
+        return service.addComment(userId, itemId, commentDto);
     }
 
 }

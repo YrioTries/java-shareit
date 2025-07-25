@@ -1,9 +1,12 @@
 package ru.practicum.shareit.entity.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.entity.booking.BookingRepository;
+import ru.practicum.shareit.entity.booking.dto.BookingDto;
+import ru.practicum.shareit.entity.booking.dto.BookingMapper;
 import ru.practicum.shareit.entity.comment.CommentRepository;
 import ru.practicum.shareit.entity.comment.model.Comment;
 import ru.practicum.shareit.entity.comment.model.CommentDto;
@@ -117,6 +120,36 @@ public class ItemServiceImpl implements ItemService {
         comment.setAuthor(author);
         comment.setCreated(LocalDateTime.now());
         return toCommentDto(commentRepository.save(comment));
+    }
+
+    @Override
+    public ItemDto getItemDtoWithBookingsAndComments(Long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " не найдена"));
+
+        LocalDateTime now = LocalDateTime.now();
+
+        BookingDto lastBooking = bookingRepository.findLastBookingForItem(itemId, now, PageRequest.of(0,1)).stream()
+                .findFirst()
+                .map(BookingMapper::toDto)
+                .orElse(null);
+
+        BookingDto nextBooking = bookingRepository.findNextBookingForItem(itemId, now, PageRequest.of(0,1)).stream()
+                .findFirst()
+                .map(BookingMapper::toDto)
+                .orElse(null);
+
+        List<CommentDto> comments = commentRepository.findByItemId(itemId).stream()
+                .map(comment -> {
+                    CommentDto commentDto = new CommentDto();
+                    commentDto.setId(comment.getId());
+                    commentDto.setText(comment.getText());
+                    commentDto.setAuthorName(comment.getAuthor().getName());
+                    commentDto.setCreated(comment.getCreated());
+                    return commentDto;
+                }).collect(Collectors.toList());
+
+        return ItemMapper.toItemDto(item, lastBooking, nextBooking, comments);
     }
 
     private CommentDto toCommentDto(Comment comment) {

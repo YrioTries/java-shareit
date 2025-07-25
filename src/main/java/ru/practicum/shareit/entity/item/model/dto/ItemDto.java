@@ -5,7 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.entity.item.model.Item;
+import ru.practicum.shareit.entity.booking.dto.BookingDto;
+import ru.practicum.shareit.entity.comment.model.CommentDto;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,11 +25,9 @@ public class ItemDto {
     @NotNull(message = "Статус доступности обязателен")
     private Boolean available;
 
-    public static ItemDto from(Item item) {
-        ItemDto dto = new ItemDto();
-        dto.name = item.getName();
-        dto.description = item.getDescription();
-        dto.available = item.getAvailable();
-        return dto;
-    }
+    private BookingDto lastBooking;
+
+    private BookingDto nextBooking;
+
+    private List<CommentDto> comments;
 }
