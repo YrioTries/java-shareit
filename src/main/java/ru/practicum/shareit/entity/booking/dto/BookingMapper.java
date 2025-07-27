@@ -1,9 +1,7 @@
 package ru.practicum.shareit.entity.booking.dto;
 
 import ru.practicum.shareit.entity.booking.Booking;
-
 import ru.practicum.shareit.entity.item.model.Item;
-
 import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
 import ru.practicum.shareit.entity.user.model.User;
 import ru.practicum.shareit.entity.user.model.dto.UserMapper;
@@ -18,6 +16,7 @@ public class BookingMapper {
         booking.setBooker(booker);
         return booking;
     }
+
     public static BookingResponseDto toResponseDto(Booking booking) {
         return new BookingResponseDto(
                 booking.getId(),

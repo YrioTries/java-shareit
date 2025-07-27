@@ -3,7 +3,6 @@ package ru.practicum.shareit.entity.item;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.entity.comment.model.CommentDto;
 import ru.practicum.shareit.entity.item.model.dto.ItemDto;

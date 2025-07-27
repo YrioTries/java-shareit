@@ -12,7 +12,6 @@ import ru.practicum.shareit.entity.comment.model.Comment;
 import ru.practicum.shareit.entity.comment.model.CommentDto;
 import ru.practicum.shareit.entity.user.UserService;
 import ru.practicum.shareit.entity.user.model.User;
-import ru.practicum.shareit.entity.user.model.dto.UserMapper;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.entity.item.model.dto.ItemDto;
@@ -129,12 +128,16 @@ public class ItemServiceImpl implements ItemService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        BookingDto lastBooking = bookingRepository.findLastBookingForItem(itemId, now, PageRequest.of(0,1)).stream()
+        BookingDto lastBooking = bookingRepository
+                .findLastBookingForItem(itemId, now, PageRequest.of(0,1))
+                .stream()
                 .findFirst()
                 .map(BookingMapper::toDto)
                 .orElse(null);
 
-        BookingDto nextBooking = bookingRepository.findNextBookingForItem(itemId, now, PageRequest.of(0,1)).stream()
+        BookingDto nextBooking = bookingRepository
+                .findNextBookingForItem(itemId, now, PageRequest.of(0,1))
+                .stream()
                 .findFirst()
                 .map(BookingMapper::toDto)
                 .orElse(null);

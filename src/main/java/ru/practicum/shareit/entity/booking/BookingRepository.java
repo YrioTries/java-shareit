@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
     List<Booking> findByBookerIdOrderByStartDesc(Long bookerId, Pageable pageable);
+
     List<Booking> findByBookerIdAndStatusOrderByStartDesc(Long bookerId, Status status, Pageable pageable);
 
     @Query("SELECT b FROM Booking b WHERE " +
@@ -33,7 +35,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findFutureByBookerId(@Param("userId") Long userId, @Param("now") LocalDateTime now, Pageable pageable);
 
     List<Booking> findByItemOwnerIdOrderByStartDesc(Long ownerId, Pageable pageable);
+
     List<Booking> findByItemOwnerIdAndStatusOrderByStartDesc(Long ownerId, Status status, Pageable pageable);
+
     @Query("SELECT b FROM Booking b WHERE " +
             "b.item.owner.id = :ownerId AND " +
             "b.start <= :now AND " +
@@ -74,6 +78,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("itemId") Long itemId,
             @Param("now") LocalDateTime now,
             Pageable pageable);
+
     @Query("SELECT b FROM Booking b WHERE " +
             "b.item.id = :itemId AND " +
             "b.status = 'APPROVED' AND " +

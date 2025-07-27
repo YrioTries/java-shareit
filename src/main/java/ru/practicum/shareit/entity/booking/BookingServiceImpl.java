@@ -10,7 +10,6 @@ import ru.practicum.shareit.entity.booking.dto.BookingMapper;
 import ru.practicum.shareit.entity.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.entity.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.entity.booking.enums.Status;
-import ru.practicum.shareit.entity.user.model.dto.UserMapper;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.entity.item.ItemService;
@@ -28,7 +27,9 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
+
     private final UserService userService;
+
     private final ItemService itemService;
 
     @Override
