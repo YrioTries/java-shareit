@@ -1,11 +1,14 @@
 package ru.practicum.shareit.entity.item.model.dto;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.entity.booking.dto.BookingDto;
 import ru.practicum.shareit.entity.comment.model.CommentDto;
 import ru.practicum.shareit.entity.item.model.Item;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
     public static ItemDto toItemDto(Item item) {

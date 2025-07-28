@@ -1,7 +1,10 @@
 package ru.practicum.shareit.entity.user.model.dto;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.entity.user.model.User;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
     public static UserDto toUserDto(User user) {
         return new UserDto(
