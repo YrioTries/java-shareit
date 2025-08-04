@@ -23,8 +23,9 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto getById(@PathVariable Long id) {
-        return service.getItemDtoWithBookingsAndComments(id);
+    public ItemDto getById(@PathVariable Long id,
+                           @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return service.getItemDtoWithBookingsAndComments(userId, id);
     }
 
     @GetMapping

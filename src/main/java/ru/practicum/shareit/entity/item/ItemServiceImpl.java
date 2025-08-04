@@ -122,25 +122,29 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItemDtoWithBookingsAndComments(Long itemId) {
+    public ItemDto getItemDtoWithBookingsAndComments(Long userId, Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " не найдена"));
 
         LocalDateTime now = LocalDateTime.now();
+        BookingDto lastBooking = null;
+        BookingDto nextBooking = null;
 
-        BookingDto lastBooking = bookingRepository
-                .findLastBookingForItem(itemId, now, PageRequest.of(0,1))
-                .stream()
-                .findFirst()
-                .map(BookingMapper::toDto)
-                .orElse(null);
+        if (item.getOwner().getId().equals(userId)) {
+            lastBooking = bookingRepository
+                    .findLastBookingForItem(itemId, now, PageRequest.of(0, 1))
+                    .stream()
+                    .findFirst()
+                    .map(BookingMapper::toDto)
+                    .orElse(null);
 
-        BookingDto nextBooking = bookingRepository
-                .findNextBookingForItem(itemId, now, PageRequest.of(0,1))
-                .stream()
-                .findFirst()
-                .map(BookingMapper::toDto)
-                .orElse(null);
+            nextBooking = bookingRepository
+                    .findNextBookingForItem(itemId, now, PageRequest.of(0, 1))
+                    .stream()
+                    .findFirst()
+                    .map(BookingMapper::toDto)
+                    .orElse(null);
+        }
 
         List<CommentDto> comments = commentRepository.findByItemId(itemId).stream()
                 .map(comment -> {
@@ -154,6 +158,7 @@ public class ItemServiceImpl implements ItemService {
 
         return ItemMapper.toItemDto(item, lastBooking, nextBooking, comments);
     }
+
 
     private CommentDto toCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
