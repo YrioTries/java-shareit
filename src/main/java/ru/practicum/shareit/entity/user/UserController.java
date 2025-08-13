@@ -1,0 +1,47 @@
+package ru.practicum.shareit.entity.user;
+
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.entity.user.model.dto.UserDto;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping(path = "/users")
+public class UserController {
+
+    private final UserService service;
+
+    @Autowired
+    public UserController(UserService service) {
+        this.service = service;
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getUser(@PathVariable Long id) {
+        return service.getUserDto(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto create(@RequestBody @Valid UserDto user) {
+        return service.create(user);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto update(@PathVariable Long id,
+                       @RequestBody @Valid Map<String, Object> updates) {
+        return service.update(id, updates);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
+
+}
