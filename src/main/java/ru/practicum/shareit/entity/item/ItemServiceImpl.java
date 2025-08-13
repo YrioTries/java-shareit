@@ -135,14 +135,14 @@ public class ItemServiceImpl implements ItemService {
                     .findLastBookingForItem(itemId, now, PageRequest.of(0, 1))
                     .stream()
                     .findFirst()
-                    .map(BookingMapper::toDto)
+                    .map(BookingMapper::toBookingDto)
                     .orElse(null);
 
             nextBooking = bookingRepository
                     .findNextBookingForItem(itemId, now, PageRequest.of(0, 1))
                     .stream()
                     .findFirst()
-                    .map(BookingMapper::toDto)
+                    .map(BookingMapper::toBookingDto)
                     .orElse(null);
         }
 

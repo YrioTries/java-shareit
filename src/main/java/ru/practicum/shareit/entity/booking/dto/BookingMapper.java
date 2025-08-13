@@ -39,7 +39,7 @@ public class BookingMapper {
         );
     }
 
-    public static BookingDto toDto(Booking booking) {
+    public static BookingDto toBookingDto(Booking booking) {
         if (booking == null) return null;
         return new BookingDto(
                 booking.getId(),
