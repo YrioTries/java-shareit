@@ -32,6 +32,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
     private final CommentRepository commentRepository;
     private final UserService userService;
 
@@ -135,14 +136,14 @@ public class ItemServiceImpl implements ItemService {
                     .findLastBookingForItem(itemId, now, PageRequest.of(0, 1))
                     .stream()
                     .findFirst()
-                    .map(BookingMapper::toBookingDto)
+                    .map(bookingMapper::toBookingDto)
                     .orElse(null);
 
             nextBooking = bookingRepository
                     .findNextBookingForItem(itemId, now, PageRequest.of(0, 1))
                     .stream()
                     .findFirst()
-                    .map(BookingMapper::toBookingDto)
+                    .map(bookingMapper::toBookingDto)
                     .orElse(null);
         }
 
