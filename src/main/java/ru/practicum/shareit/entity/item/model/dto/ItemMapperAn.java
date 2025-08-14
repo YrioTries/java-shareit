@@ -1,5 +1,6 @@
 package ru.practicum.shareit.entity.item.model.dto;
 
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.shareit.entity.booking.dto.BookingDto;
@@ -10,7 +11,9 @@ import ru.practicum.shareit.entity.item.model.Item;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {BookingMapperAn.class, CommentMapperAn.class})
+@Mapper(componentModel = "spring",
+        uses = {BookingMapperAn.class, CommentMapperAn.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ItemMapperAn {
     // Автоматический маппинг для простых полей
     ItemDto toItemDto(Item item);

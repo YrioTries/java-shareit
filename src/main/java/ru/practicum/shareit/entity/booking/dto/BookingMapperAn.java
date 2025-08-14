@@ -1,5 +1,6 @@
 package ru.practicum.shareit.entity.booking.dto;
 
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -10,7 +11,9 @@ import ru.practicum.shareit.entity.item.model.dto.ItemMapperAn;
 import ru.practicum.shareit.entity.user.model.User;
 import ru.practicum.shareit.entity.user.model.dto.UserMapperAn;
 
-@Mapper(componentModel = "spring", uses = {ItemMapperAn.class, UserMapperAn.class})
+@Mapper(componentModel = "spring",
+        uses = {ItemMapperAn.class, UserMapperAn.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface BookingMapperAn {
 
     @Mapping(source = "bookingDto.id", target = "id")
