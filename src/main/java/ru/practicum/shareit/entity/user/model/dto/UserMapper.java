@@ -1,24 +1,13 @@
 package ru.practicum.shareit.entity.user.model.dto;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
 import ru.practicum.shareit.entity.user.model.User;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserMapper {
-    public static UserDto toUserDto(User user) {
-        return new UserDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail()
-        );
-    }
+@Mapper(componentModel = "spring",
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface UserMapper {
+    UserDto toUserDto(User user);
 
-    public static User toUser(UserDto userDto) {
-        return new User(
-                userDto.getId(),
-                userDto.getName(),
-                userDto.getEmail()
-        );
-    }
+    User toUser(UserDto userDto);
 }
