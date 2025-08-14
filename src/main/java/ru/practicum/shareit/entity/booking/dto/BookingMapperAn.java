@@ -16,8 +16,8 @@ import ru.practicum.shareit.entity.user.model.dto.UserMapperAn;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface BookingMapperAn {
 
-    @Mapping(source = "bookingDto.id", target = "id")
-    Booking toBooking(BookingDto bookingDto, Item item, User booker);
+    @Mapping(source = "bookingRequestDto.id", target = "id")
+    Booking toBooking(BookingRequestDto bookingRequestDto, Item item, User booker);
 
     BookingResponseDto toResponseDto(Booking booking);
 
