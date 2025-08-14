@@ -7,12 +7,12 @@ import org.mapstruct.Named;
 import ru.practicum.shareit.entity.booking.Booking;
 import ru.practicum.shareit.entity.booking.enums.Status;
 import ru.practicum.shareit.entity.item.model.Item;
-import ru.practicum.shareit.entity.item.model.dto.ItemMapperAn;
+import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
 import ru.practicum.shareit.entity.user.model.User;
 import ru.practicum.shareit.entity.user.model.dto.UserMapperAn;
 
 @Mapper(componentModel = "spring",
-        uses = {ItemMapperAn.class, UserMapperAn.class},
+        uses = {ItemMapper.class, UserMapperAn.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface BookingMapper {
 

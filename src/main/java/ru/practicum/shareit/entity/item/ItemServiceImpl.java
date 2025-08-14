@@ -10,12 +10,11 @@ import ru.practicum.shareit.entity.booking.dto.BookingMapper;
 import ru.practicum.shareit.entity.comment.CommentRepository;
 import ru.practicum.shareit.entity.comment.model.Comment;
 import ru.practicum.shareit.entity.comment.model.CommentDto;
-import ru.practicum.shareit.entity.user.UserService;
+import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
 import ru.practicum.shareit.entity.user.model.User;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.entity.item.model.dto.ItemDto;
-import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
 import ru.practicum.shareit.entity.item.model.Item;
 import ru.practicum.shareit.entity.user.UserRepository;
 
@@ -30,17 +29,17 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final CommentRepository commentRepository;
-    private final UserService userService;
 
     @Override
     public ItemDto getItemDtoById(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + id + " не найдена"));
-        return ItemMapper.toItemDto(item);
+        return itemMapper.toItemDto(item);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Пользователь с ID " + userId + " не найден");
         }
         return itemRepository.findByOwnerId(userId).stream()
-                .map(ItemMapper::toItemDto)
+                .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
@@ -65,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
         return itemRepository.searchAvailableItems(text.toLowerCase()).stream()
-                .map(ItemMapper::toItemDto)
+                .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
@@ -74,10 +73,10 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long userId, ItemDto itemDto) {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
-        Item item = ItemMapper.toItem(itemDto);
+        Item item = itemMapper.toItem(itemDto);
         item.setOwner(owner);
         Item savedItem = itemRepository.save(item);
-        return ItemMapper.toItemDto(savedItem);
+        return itemMapper.toItemDto(savedItem);
     }
 
     @Override
@@ -101,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
                     break;
             }
         });
-        return ItemMapper.toItemDto(itemRepository.save(item));
+        return itemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Override
@@ -157,7 +156,7 @@ public class ItemServiceImpl implements ItemService {
                     return commentDto;
                 }).collect(Collectors.toList());
 
-        return ItemMapper.toItemDto(item, lastBooking, nextBooking, comments);
+        return itemMapper.toItemDto(item, lastBooking, nextBooking, comments);
     }
 
 

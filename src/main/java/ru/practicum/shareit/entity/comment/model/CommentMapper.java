@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-public interface CommentMapperAn {
+public interface CommentMapper {
     @Mapping(source = "author.name", target = "authorName")
     CommentDto toCommentDto(Comment comment);
 
