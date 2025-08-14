@@ -1,56 +1,36 @@
 package ru.practicum.shareit.entity.booking.dto;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import ru.practicum.shareit.entity.booking.Booking;
+import ru.practicum.shareit.entity.booking.enums.Status;
 import ru.practicum.shareit.entity.item.model.Item;
-import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
+import ru.practicum.shareit.entity.item.model.dto.ItemMapperAn;
 import ru.practicum.shareit.entity.user.model.User;
-import ru.practicum.shareit.entity.user.model.dto.UserMapper;
+import ru.practicum.shareit.entity.user.model.dto.UserMapperAn;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class BookingMapper {
+@Mapper(componentModel = "spring",
+        uses = {ItemMapperAn.class, UserMapperAn.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface BookingMapper {
 
-    public static Booking toBooking(BookingRequestDto bookingRequestDto, Item item, User booker) {
-        Booking booking = new Booking();
-        booking.setStart(bookingRequestDto.getStart());
-        booking.setEnd(bookingRequestDto.getEnd());
-        booking.setItem(item);
-        booking.setBooker(booker);
-        return booking;
+    @Mapping(source = "bookingRequestDto.id", target = "id")
+    Booking toBooking(BookingRequestDto bookingRequestDto, Item item, User booker);
+
+    BookingResponseDto toResponseDto(Booking booking);
+
+    @Mapping(source = "item.id", target = "itemId")
+    BookingRequestDto toRequestDto(Booking booking);
+
+    @Mapping(source = "item.id", target = "itemId")
+    @Mapping(source = "booker.id", target = "bookerId")
+    @Mapping(source = "status", target = "status", qualifiedByName = "mapStatusToString")
+    BookingDto toBookingDto(Booking booking);
+
+    @Named("mapStatusToString")
+    default String mapStatusToString(Status status) {
+        return status != null ? status.name() : null;
     }
-
-    public static BookingResponseDto toResponseDto(Booking booking) {
-        return new BookingResponseDto(
-                booking.getId(),
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getStatus(),
-                UserMapper.toUserDto(booking.getBooker()),
-                ItemMapper.toItemDto(booking.getItem())
-        );
-    }
-
-    public static BookingRequestDto toRequestDto(Booking booking) {
-        return new BookingRequestDto(
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getItem().getId()
-        );
-    }
-
-    public static BookingDto toBookingDto(Booking booking) {
-        if (booking == null) return null;
-        return new BookingDto(
-                booking.getId(),
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getItem().getId(),
-                booking.getBooker().getId(),
-                booking.getStatus().name()
-        );
-    }
-
-
-
 }

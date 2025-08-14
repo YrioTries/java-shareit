@@ -4,7 +4,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.shareit.entity.booking.dto.BookingDto;
-import ru.practicum.shareit.entity.booking.dto.BookingMapperAn;
+import ru.practicum.shareit.entity.booking.dto.BookingMapper;
 import ru.practicum.shareit.entity.comment.model.CommentDto;
 import ru.practicum.shareit.entity.comment.model.CommentMapperAn;
 import ru.practicum.shareit.entity.item.model.Item;
@@ -12,7 +12,7 @@ import ru.practicum.shareit.entity.item.model.Item;
 import java.util.List;
 
 @Mapper(componentModel = "spring",
-        uses = {BookingMapperAn.class, CommentMapperAn.class},
+        uses = {BookingMapper.class, CommentMapperAn.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ItemMapperAn {
     // Автоматический маппинг для простых полей

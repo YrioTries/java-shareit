@@ -32,6 +32,8 @@ public class BookingServiceImpl implements BookingService {
 
     private final ItemService itemService;
 
+    private final BookingMapper bookingMapper;
+
     @Override
     @Transactional
     public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto, Long userId) {
@@ -40,10 +42,10 @@ public class BookingServiceImpl implements BookingService {
 
         validateBooking(bookingRequestDto, item, booker);
 
-        Booking booking = BookingMapper.toBooking(bookingRequestDto, item, booker);
+        Booking booking = bookingMapper.toBooking(bookingRequestDto, item, booker);
         booking.setStatus(Status.WAITING);
 
-        return BookingMapper.toResponseDto(bookingRepository.save(booking));
+        return bookingMapper.toResponseDto(bookingRepository.save(booking));
     }
 
     @Override
@@ -58,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Бронирование уже было обработано");
         }
         booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
-        return BookingMapper.toResponseDto(bookingRepository.save(booking));
+        return bookingMapper.toResponseDto(bookingRepository.save(booking));
     }
 
     @Override
@@ -69,7 +71,7 @@ public class BookingServiceImpl implements BookingService {
                 !booking.getItem().getOwner().getId().equals(userId)) {
             throw new ValidationException("Просмотр бронирования доступен только автору или владельцу");
         }
-        return BookingMapper.toResponseDto(booking);
+        return bookingMapper.toResponseDto(booking);
     }
 
     @Override
@@ -80,25 +82,25 @@ public class BookingServiceImpl implements BookingService {
         switch (state.toUpperCase()) {
             case "CURRENT":
                 return bookingRepository.findCurrentByBookerId(userId, now, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "PAST":
                 return bookingRepository.findPastByBookerId(userId, now, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "FUTURE":
                 return bookingRepository.findFutureByBookerId(userId, now, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "WAITING":
             case "REJECTED":
                 Status status = Status.valueOf(state.toUpperCase());
                 return bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, status, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "ALL":
                 return bookingRepository.findByBookerIdOrderByStartDesc(userId, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             default:
                 throw new ValidationException("Unknown state: " + state);
@@ -113,25 +115,25 @@ public class BookingServiceImpl implements BookingService {
         switch (state.toUpperCase()) {
             case "CURRENT":
                 return bookingRepository.findCurrentByOwnerId(ownerId, now, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "PAST":
                 return bookingRepository.findPastByOwnerId(ownerId, now, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "FUTURE":
                 return bookingRepository.findFutureByOwnerId(ownerId, now, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "WAITING":
             case "REJECTED":
                 Status status = Status.valueOf(state.toUpperCase());
                 return bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, status, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             case "ALL":
                 return bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId, pageable).stream()
-                        .map(BookingMapper::toResponseDto)
+                        .map(bookingMapper::toResponseDto)
                         .collect(Collectors.toList());
             default:
                 throw new ValidationException("Unknown state: " + state);
