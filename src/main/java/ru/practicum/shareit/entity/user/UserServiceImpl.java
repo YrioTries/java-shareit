@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.entity.user.model.User;
-import ru.practicum.shareit.entity.user.model.dto.UserMapper;
+import ru.practicum.shareit.entity.user.model.dto.UserMapperAn;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.entity.user.model.dto.UserDto;
@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserMapperAn userMapperAn;
 
     @Override
     public List<UserDto> getUserList() {
         return userRepository.findAll().stream()
-                .map(userMapper::toUserDto)
+                .map(userMapperAn::toUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserDto(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователя с таким id не существует"));
-        return userMapper.toUserDto(user);
+        return userMapperAn.toUserDto(user);
     }
 
     @Override
@@ -49,9 +49,9 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException("Пользователь с такой почтой уже существует");
         }
 
-        User user = userMapper.toUser(userDto);
+        User user = userMapperAn.toUser(userDto);
         User savedUser = userRepository.save(user);
-        return userMapper.toUserDto(savedUser);
+        return userMapperAn.toUserDto(savedUser);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User updatedUser = userRepository.save(user);
-        return userMapper.toUserDto(updatedUser);
+        return userMapperAn.toUserDto(updatedUser);
     }
 
     @Override

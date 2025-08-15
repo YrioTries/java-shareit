@@ -9,10 +9,10 @@ import ru.practicum.shareit.entity.booking.enums.Status;
 import ru.practicum.shareit.entity.item.model.Item;
 import ru.practicum.shareit.entity.item.model.dto.ItemMapper;
 import ru.practicum.shareit.entity.user.model.User;
-import ru.practicum.shareit.entity.user.model.dto.UserMapper;
+import ru.practicum.shareit.entity.user.model.dto.UserMapperAn;
 
 @Mapper(componentModel = "spring",
-        uses = {ItemMapper.class, UserMapper.class},
+        uses = {ItemMapper.class, UserMapperAn.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface BookingMapper {
 
