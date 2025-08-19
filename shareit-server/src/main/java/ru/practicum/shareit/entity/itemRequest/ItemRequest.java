@@ -1,4 +1,4 @@
-package ru.practicum.shareit.entity.item.model;
+package ru.practicum.shareit.entity.itemRequest;
 
 import jakarta.persistence.*;
 import lombok.Data;

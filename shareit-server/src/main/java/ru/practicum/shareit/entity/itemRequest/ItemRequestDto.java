@@ -1,7 +1,14 @@
-package ru.practicum.shareit.entity.item.dto;
+package ru.practicum.shareit.entity.itemRequest;
+
+import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.entity.item.dto.ItemResponseDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Getter
+@Setter
 public class ItemRequestDto {
     private long id;
     private String description;
