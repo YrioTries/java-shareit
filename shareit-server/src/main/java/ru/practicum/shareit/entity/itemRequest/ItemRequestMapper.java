@@ -12,7 +12,7 @@ public interface ItemRequestMapper {
 
     default ItemRequestDto toItemRequestDtoWithItems(ItemRequest itemRequest, List<ItemResponseDto> items) {
         ItemRequestDto dto = toItemRequestDto(itemRequest);
-        dto.setItems(items);  // Предполагает, что у вас есть сеттер для `items`
+        dto.setItems(items);
         return dto;
     }
 }
