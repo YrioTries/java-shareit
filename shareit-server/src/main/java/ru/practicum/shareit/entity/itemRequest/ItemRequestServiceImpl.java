@@ -9,6 +9,7 @@ import ru.practicum.shareit.entity.item.model.Item;
 import ru.practicum.shareit.entity.item.model.ItemResponse;
 import ru.practicum.shareit.entity.user.UserRepository;
 import ru.practicum.shareit.entity.user.model.User;
+import ru.practicum.shareit.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,15 +40,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequest> requests = itemRequestRepository.findByRequesterIdOrderByCreatedDesc(userId);
         return requests.stream()
                 .map(request -> {
-                    List<ItemResponseDto> answers = itemRepository.findByRequestId(request.getId())
-                            .stream()
-                            .map(item -> new ItemResponseDto(
-                                    item.getId(),
-                                    item.getName(),
-                                    item.getOwner().getId()
-                            ))
-                            .collect(Collectors.toList());
-                    return mapToDto(request, answers);
+                    List<ItemResponseDto> answers = getItemResponses(itemRepository.findByRequestId(request.getId()));
+                    return itemRequestMapper.toItemRequestDtoWithItems(request, answers);
                 })
                 .collect(Collectors.toList());
     }
@@ -58,7 +52,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequest> requests = itemRequestRepository.findByRequesterIdNotOrderByCreatedDesc(userId, pageable);
         return requests.stream()
                 .map(request -> {
-                    List<ItemResponse> answers = itemRepository.findByRequestId(request.getId())
+                    List<ItemResponseDto> answers = itemRepository.findByRequestId(request.getId())
                             .stream()
                             .map(item -> new ItemResponseDto(
                                     item.getId(),
@@ -66,7 +60,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                                     item.getOwner().getId()
                             ))
                             .collect(Collectors.toList());
-                    return mapToDto(request, answers);
+                    return itemRequestMapper.toItemRequestDtoWithItems(request, answers);
                 })
                 .collect(Collectors.toList());
     }
@@ -75,19 +69,28 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto createRequest(Long userId, ItemRequestDto itemRequestDto) {
         ItemRequest request = new ItemRequest();
         request.setDescription(itemRequestDto.getDescription());
-        request.setRequester(new User(userId)); // Предполагаем, что у вас есть доступ к объекту User
+        User user;
+         if (userRepository.findById(userId).isPresent())
+             user = userRepository.findById(userId).get();
+         else
+             throw new NotFoundException("Пользователя с таким id нет в бд");
+
+        request.setRequester(userRepository.getReferenceById(userId));
         request.setCreated(LocalDateTime.now());
 
         ItemRequest savedRequest = itemRequestRepository.save(request);
-        return mapToDto(savedRequest, List.of());
+        return itemRequestMapper.toItemRequestDtoWithItems(savedRequest, List.of());
     }
 
-    private ItemRequestDto mapToDto(ItemRequest request, List<ItemResponse> answers) {
-        ItemRequestDto dto = new ItemRequestDto();
-        dto.setId(request.getId());
-        dto.setDescription(request.getDescription());
-        dto.setCreated(request.getCreated());
-        dto.setItems(answers); // Предполагаем, что `ItemRequestDto` имеет поле `items` для хранения ответов
-        return dto;
+    private List<ItemResponseDto> getItemResponses(List<Item> relatedItems) {
+        return relatedItems.stream()
+                .map(item -> new ItemResponseDto(
+                        item.getId(),
+                        item.getName(),
+                        item.getOwner().getId()
+                ))
+                .collect(Collectors.toList());
+
     }
+
 }
