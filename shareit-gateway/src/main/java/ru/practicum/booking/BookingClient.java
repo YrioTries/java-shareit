@@ -3,32 +3,14 @@ package ru.practicum.booking;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.entity.booking.Booking;
-import ru.practicum.shareit.entity.booking.BookingRepository;
-import ru.practicum.shareit.entity.booking.dto.BookingDto;
-import ru.practicum.shareit.entity.booking.dto.BookingMapper;
 import ru.practicum.shareit.entity.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.entity.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.entity.booking.enums.Status;
-import ru.practicum.shareit.entity.item.model.Item;
-import ru.practicum.shareit.entity.item.services.ItemService;
-import ru.practicum.shareit.entity.user.UserService;
-import ru.practicum.shareit.entity.user.model.User;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 
-import java.lang.reflect.ParameterizedType;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookingClient {

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.entity.item.dto;
+package ru.practicum.shareit.entity.item.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -5,22 +5,17 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.entity.item.dto.ItemDto;
-import ru.practicum.shareit.entity.user.model.User;
 import ru.practicum.shareit.entity.user.model.dto.UserDto;
-import ru.practicum.shareit.exception.ConflictException;
-import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.List;
 import java.util.Map;
 
 public class UserClient {
 
-    final private RestTemplate restTemplate;
+    final RestTemplate restTemplate;
 
     public UserClient(@Value("${shareit.server.url}") String serverUrl, RestTemplateBuilder builder) {
         this.restTemplate = builder

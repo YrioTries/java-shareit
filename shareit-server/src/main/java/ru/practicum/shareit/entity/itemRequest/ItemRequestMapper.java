@@ -2,7 +2,7 @@ package ru.practicum.shareit.entity.itemRequest;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import ru.practicum.shareit.entity.item.dto.ItemResponseDto;
+import ru.practicum.shareit.entity.item.model.ItemResponseDto;
 import java.util.List;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
