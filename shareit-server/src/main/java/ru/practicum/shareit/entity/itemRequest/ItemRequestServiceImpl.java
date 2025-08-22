@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.entity.item.ItemRepository;
 import ru.practicum.shareit.entity.item.dto.ItemResponseDto;
 import ru.practicum.shareit.entity.item.model.Item;
+import ru.practicum.shareit.entity.item.model.ItemResponse;
+import ru.practicum.shareit.entity.user.UserRepository;
 import ru.practicum.shareit.entity.user.model.User;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final ItemRequestMapper itemRequestMapper;
 
     @Override
     public ItemRequestDto getRequestById(Long requestId) {
@@ -27,7 +31,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<Item> relatedItems = itemRepository.findByRequestId(requestId);
         List<ItemResponseDto> itemResponseDtos = getItemResponses(relatedItems);
 
-        return mapToDto(request, itemResponseDtos);
+        return itemRequestMapper.toItemRequestDtoWithItems(request, itemResponseDtos);
     }
 
     @Override
@@ -35,9 +39,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequest> requests = itemRequestRepository.findByRequesterIdOrderByCreatedDesc(userId);
         return requests.stream()
                 .map(request -> {
-                    List<ItemResponse.ItemAnswerResponse> answers = itemRepository.findByRequestId(request.getId())
+                    List<ItemResponseDto> answers = itemRepository.findByRequestId(request.getId())
                             .stream()
-                            .map(item -> new ItemResponse.ItemAnswerResponse(
+                            .map(item -> new ItemResponseDto(
                                     item.getId(),
                                     item.getName(),
                                     item.getOwner().getId()
@@ -54,9 +58,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequest> requests = itemRequestRepository.findByRequesterIdNotOrderByCreatedDesc(userId, pageable);
         return requests.stream()
                 .map(request -> {
-                    List<ItemResponse.ItemAnswerResponse> answers = itemRepository.findByRequestId(request.getId())
+                    List<ItemResponse> answers = itemRepository.findByRequestId(request.getId())
                             .stream()
-                            .map(item -> new ItemResponse.ItemAnswerResponse(
+                            .map(item -> new ItemResponseDto(
                                     item.getId(),
                                     item.getName(),
                                     item.getOwner().getId()
@@ -78,7 +82,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return mapToDto(savedRequest, List.of());
     }
 
-    private ItemRequestDto mapToDto(ItemRequest request, List<ItemResponse.ItemAnswerResponse> answers) {
+    private ItemRequestDto mapToDto(ItemRequest request, List<ItemResponse> answers) {
         ItemRequestDto dto = new ItemRequestDto();
         dto.setId(request.getId());
         dto.setDescription(request.getDescription());
