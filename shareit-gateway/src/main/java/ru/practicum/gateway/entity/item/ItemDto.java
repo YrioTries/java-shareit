@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.server.entity.booking.dto.BookingDto;
+import ru.practicum.gateway.entity.booking.BookingDto;
 
 
 import java.util.List;
