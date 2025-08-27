@@ -1,9 +1,9 @@
 package ru.practicum.gateway.entity.booking;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class BookingClient {
 
     private final RestTemplate restTemplate;
@@ -24,6 +23,7 @@ public class BookingClient {
                 .build();
     }
 
+    @CacheEvict(value = "bookings", allEntries = true)
     public ResponseEntity<BookingResponseDto> createBooking(BookingRequestDto bookingRequestDto, Long userId) {
         HttpEntity<BookingRequestDto> request = new HttpEntity<>(bookingRequestDto);
         return restTemplate.exchange("/",
@@ -33,6 +33,7 @@ public class BookingClient {
                 userId);
     }
 
+    @CacheEvict(value = "bookings", key = "#bookingId")
     public ResponseEntity<BookingResponseDto> approveBooking(Long bookingId, Boolean approved, Long userId) {
         String url = String.format("/%d?approved=%b&userId=%d", bookingId, approved, userId);
 
@@ -44,7 +45,7 @@ public class BookingClient {
         );
     }
 
-
+    @Cacheable(value = "bookings", key = "#id")
     public ResponseEntity<BookingResponseDto> getBookingById(Long bookingId, Long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Sharer-User-Id", userId.toString());
@@ -56,7 +57,7 @@ public class BookingClient {
                 bookingId);
     }
 
-
+    @Cacheable(value = "bookings", key = "'user_' + #userId + '_state_' + #state + '_from_' + #from + '_size_' + #size")
     public ResponseEntity<List<BookingResponseDto>> getUserBookings(Long userId, String state, Integer from, Integer size) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Sharer-User-Id", userId.toString());
@@ -71,7 +72,7 @@ public class BookingClient {
                 new ParameterizedTypeReference<List<BookingResponseDto>>() {});
     }
 
-
+    @Cacheable(value = "bookings", key = "'user_' + #userId + '_state_' + #state + '_from_' + #from + '_size_' + #size")
     public ResponseEntity<List<BookingResponseDto>> getOwnerBookings(Long ownerId, String state, Integer from, Integer size) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Sharer-User-Id", ownerId.toString());

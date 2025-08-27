@@ -1,8 +1,9 @@
 package ru.practicum.gateway.entity.user;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -16,7 +17,6 @@ import java.util.Map;
 
 
 @Service
-@AllArgsConstructor
 public class UserClient {
 
     private final RestTemplate restTemplate;
@@ -27,25 +27,30 @@ public class UserClient {
                 .build();
     }
 
+    @Cacheable(value = "users", key = "'all'")
     public ResponseEntity<List<UserDto>> getUserList() {
         return restTemplate.exchange("/", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<UserDto>>() {});
     }
 
+    @Cacheable(value = "users", key = "#id")
     public ResponseEntity<UserDto> getUserDto(Long id) {
         return restTemplate.getForEntity("/{id}", UserDto.class, id);
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public ResponseEntity<UserDto> create(UserDto userDto) {
         HttpEntity<UserDto> request = new HttpEntity<>(userDto);
         return restTemplate.exchange("/", HttpMethod.POST, request, UserDto.class);
     }
 
+    @CacheEvict(value = "users", key = "#id")
     public ResponseEntity<UserDto> update(Long id, Map<String, Object> updates) {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(updates);
         return restTemplate.exchange("/{id}", HttpMethod.PATCH, requestEntity, UserDto.class, id);
     }
 
+    @CacheEvict(value = "users", key = "#id")
     public ResponseEntity<Void> delete(Long id) {
         return restTemplate.exchange("/{id}", HttpMethod.DELETE, null, Void.class, id);
     }

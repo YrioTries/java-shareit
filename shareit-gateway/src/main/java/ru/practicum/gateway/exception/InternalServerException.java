@@ -1,4 +1,4 @@
-package ru.practicum.gateway.entity.exception;
+package ru.practicum.gateway.exception;
 
 public class InternalServerException extends RuntimeException {
     public InternalServerException(String message) {

@@ -141,6 +141,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void validateBooking(BookingRequestDto bookingDto, Item item, User booker) {
+        if (userService.getUser(booker.getId()) == null) {
+            throw new NotFoundException("Пользователя с таким id не существует");
+        }
+        if (itemService.getItemById(item.getId()) == null) {
+            throw new NotFoundException("Вещи с таким id не существует");
+        }
         if (item.getOwner().getId().equals(booker.getId())) {
             throw new ValidationException("Владелец не может бронировать свою вещь");
         }

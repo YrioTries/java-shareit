@@ -1,4 +1,4 @@
-package ru.practicum.gateway.entity.exception.handling;
+package ru.practicum.gateway.exception.handling;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.gateway.entity.exception.*;
+import ru.practicum.gateway.exception.*;
 
 @Slf4j
 @RestControllerAdvice
