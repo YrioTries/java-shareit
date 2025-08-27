@@ -1,5 +1,7 @@
 package ru.practicum.gateway.entity.booking;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,13 +13,10 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class BookingClient {
 
-    RestTemplate restTemplate;
-
-    public BookingClient(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
+    private final RestTemplate restTemplate;
 
     public BookingClient(@Value("${shareit.server.url}") String serverUrl, RestTemplateBuilder builder) {
         this.restTemplate = builder
