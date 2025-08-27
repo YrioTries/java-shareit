@@ -2,7 +2,6 @@ package ru.practicum.gateway.entity.item_request;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.server.entity.item.model.ItemResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
