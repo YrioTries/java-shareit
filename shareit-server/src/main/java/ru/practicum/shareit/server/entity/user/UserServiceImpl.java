@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.server.entity.booking.BookingRepository;
+import ru.practicum.shareit.server.entity.comment.CommentRepository;
 import ru.practicum.shareit.server.entity.user.model.User;
 import ru.practicum.shareit.server.entity.user.model.dto.UserMapper;
 import ru.practicum.shareit.server.exception.ConflictException;
@@ -19,7 +21,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
     private final UserMapper userMapper;
 
     @Override
@@ -99,7 +104,10 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(id)) {
             throw new NotFoundException("Невозможно удалить пользователя которого нет");
         }
+        bookingRepository.deleteByBookerId(id);
+        commentRepository.deleteByAuthorId(id);
         userRepository.deleteById(id);
+
         log.info("Пользователь с id={} удалён", id);
     }
 

@@ -40,7 +40,7 @@ public class ItemRequestClient {
         headers.set("X-Sharer-User-Id", userId.toString());
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         ResponseEntity<List<ItemRequestDto>> response = restTemplate.exchange(
-                "/",
+                "",
                 HttpMethod.GET,
                 entity,
                 new ParameterizedTypeReference<List<ItemRequestDto>>() {}
@@ -73,7 +73,7 @@ public class ItemRequestClient {
         headers.set("X-Sharer-User-Id", userId.toString());
         HttpEntity<ItemRequestDto> entity = new HttpEntity<>(itemRequestDto, headers);
         ResponseEntity<ItemRequestDto> response = restTemplate.exchange(
-                "/",
+                "",
                 HttpMethod.POST,
                 entity,
                 ItemRequestDto.class

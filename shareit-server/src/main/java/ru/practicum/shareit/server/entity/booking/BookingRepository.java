@@ -2,6 +2,7 @@ package ru.practicum.shareit.server.entity.booking;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.server.entity.booking.enums.Status;
@@ -94,4 +95,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("bookerId") Long bookerId,
             @Param("itemId") Long itemId,
             @Param("endDate") LocalDateTime endDate);
+
+    @Modifying
+    @Query("DELETE FROM Booking b WHERE b.booker.id = :userId")
+    void deleteByBookerId(@Param("userId") Long userId);
 }

@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -54,7 +53,7 @@ public class UserClient {
     public ResponseEntity<UserDto> create(UserDto userDto) {
         log.info("Отправка запроса на создание пользователя: {}", userDto);
         HttpEntity<UserDto> request = new HttpEntity<>(userDto);
-        ResponseEntity<UserDto> response = restTemplate.exchange("/", HttpMethod.POST, request, UserDto.class);
+        ResponseEntity<UserDto> response = restTemplate.exchange("", HttpMethod.POST, request, UserDto.class);
         log.info("Создан пользователь: {}", response.getBody());
         return response;
     }
@@ -62,10 +61,8 @@ public class UserClient {
     @CacheEvict(value = "users", key = "#id")
     public ResponseEntity<UserDto> update(Long id, Map<String, Object> updates) {
         log.info("Отправка запроса на обновление пользователя с id={}, данные: {}", id, updates);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-HTTP-Method-Override", "PATCH");
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(updates, headers);
-        ResponseEntity<UserDto> response = restTemplate.exchange("/{id}", HttpMethod.POST, requestEntity, UserDto.class, id);
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(updates);
+        ResponseEntity<UserDto> response = restTemplate.exchange("/{id}", HttpMethod.PATCH, requestEntity, UserDto.class, id);
         log.info("Пользователь с id={} обновлён: {}", id, response.getBody());
         return response;
     }
