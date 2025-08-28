@@ -14,6 +14,7 @@ import java.util.List;
 
 @Service
 public class ItemRequestClient {
+
     private final RestTemplate restTemplate;
 
     public ItemRequestClient(@Value("${shareit.server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -27,7 +28,7 @@ public class ItemRequestClient {
         return restTemplate.getForEntity("/{requestId}", ItemRequestDto.class, requestId);
     }
 
-    // Кэшируем список запросов пользователя
+
     @Cacheable(value = "itemRequests", key = "'user_' + #userId")
     public ResponseEntity<List<ItemRequestDto>> getUserRequests(Long userId) {
         HttpHeaders headers = new HttpHeaders();

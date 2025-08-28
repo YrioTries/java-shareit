@@ -29,14 +29,19 @@ public class UserClient {
 
     @Cacheable(value = "users", key = "'all'")
     public ResponseEntity<List<UserDto>> getUserList() {
-        return restTemplate.exchange("/", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<UserDto>>() {});
+        return restTemplate.exchange(
+                "/", // Корневой путь "/users" уже задан в DefaultUriBuilderFactory
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<UserDto>>() {}
+        );
     }
 
     @Cacheable(value = "users", key = "#id")
     public ResponseEntity<UserDto> getUserDto(Long id) {
         return restTemplate.getForEntity("/{id}", UserDto.class, id);
     }
+
 
     @CacheEvict(value = "users", allEntries = true)
     public ResponseEntity<UserDto> create(UserDto userDto) {

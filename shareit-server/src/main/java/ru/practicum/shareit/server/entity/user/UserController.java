@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.server.entity.user.model.dto.UserDto;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +20,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUser(@PathVariable Long id) {
         return service.getUserDto(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getUserList() {
+        return service.getUserList();
     }
 
     @PostMapping
