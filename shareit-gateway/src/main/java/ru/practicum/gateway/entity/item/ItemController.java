@@ -16,11 +16,11 @@ public class ItemController {
         this.itemClient = itemClient;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> getItemById(@PathVariable Long id,
+    public ResponseEntity<Object> getItemById(@PathVariable Long itemId,
                                               @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemClient.getItemDtoWithBookingsAndComments(id, userId);
+        return itemClient.getItemDtoWithBookingsAndComments(itemId, userId);
     }
 
     @GetMapping
