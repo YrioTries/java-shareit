@@ -75,6 +75,13 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.DELETE, path, userId, parameters, null);
     }
 
+    protected ResponseEntity<Object> getWithHeaders(String path, long userId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Sharer-User-Id", String.valueOf(userId));
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        return rest.exchange(path, HttpMethod.GET, requestEntity, Object.class);
+    }
+
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders(userId));
 

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.server.entity.item.ItemRepository;
 import ru.practicum.shareit.server.entity.item.model.ItemResponseDto;
 import ru.practicum.shareit.server.entity.item.model.Item;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
@@ -77,18 +79,15 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional
     public ItemRequestDto createRequest(Long userId, ItemRequestDto itemRequestDto) {
         log.info("Создание нового запроса на вещь от пользователя с id={}", userId);
-        ItemRequest request = new ItemRequest();
-        request.setDescription(itemRequestDto.getDescription());
-        User user;
-        if (userRepository.findById(userId).isPresent()) {
-            user = userRepository.findById(userId).get();
-        } else {
-            log.error("Пользователь с id={} не найден", userId);
-            throw new NotFoundException("Пользователя с таким id нет в бд");
-        }
-        request.setRequester(user);
+        ItemRequest request = itemRequestMapper.toItemRequest(itemRequestDto);
+
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден!"));
+
+        request.setRequester(owner);
         request.setCreated(LocalDateTime.now());
         ItemRequest savedRequest = itemRequestRepository.save(request);
         log.info("Создан запрос на вещь с id={}", savedRequest.getId());

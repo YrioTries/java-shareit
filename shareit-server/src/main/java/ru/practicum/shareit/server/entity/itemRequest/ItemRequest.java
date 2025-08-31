@@ -21,9 +21,9 @@ public class ItemRequest {
     @Column(nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User requester;
-
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User requester;
 }

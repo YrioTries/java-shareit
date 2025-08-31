@@ -18,8 +18,9 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> getItemById(@PathVariable Long id) {
-        return itemClient.getItemById(id);
+    public ResponseEntity<Object> getItemById(@PathVariable Long id,
+                                              @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemClient.getItemDtoWithBookingsAndComments(id, userId);
     }
 
     @GetMapping

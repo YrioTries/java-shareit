@@ -28,7 +28,7 @@ public class ItemClient  extends BaseClient {
         );
     }
 
-    @Cacheable(value = "items", key = "#id")
+    @Cacheable(value = "items", key = "#itemId")
     public ResponseEntity<Object> getItemById(Long itemId) {
         log.info("Отправка запроса на получение информации о вещи с ID={}", itemId);
         return get("/" + itemId);
@@ -72,6 +72,12 @@ public class ItemClient  extends BaseClient {
     @CacheEvict(value = "items", key = "#itemId")
     public ResponseEntity<Object> deleteItem(Long itemId) {
         return delete("/" + itemId);
+    }
+
+    @Cacheable(value = "items", key = "'item_' + #itemId + '_user_' + #userId")
+    public ResponseEntity<Object> getItemDtoWithBookingsAndComments(Long itemId, Long userId) {
+        log.info("Отправка запроса на получение информации о вещи с ID={} с бронированиями и комментариями для пользователя с ID={}", itemId, userId);
+        return get("/" + itemId, userId);
     }
 
 }
