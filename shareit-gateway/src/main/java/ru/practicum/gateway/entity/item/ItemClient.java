@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class ItemClient  extends BaseClient {
+public class ItemClient extends BaseClient {
 
     private static final String API_PREFIX = "/items";
 
@@ -76,7 +76,14 @@ public class ItemClient  extends BaseClient {
 
     @Cacheable(value = "items", key = "'item_' + #itemId + '_user_' + #userId")
     public ResponseEntity<Object> getItemDtoWithBookingsAndComments(Long itemId, Long userId) {
-        log.info("Отправка запроса на получение информации о вещи с ID={} с бронированиями и комментариями для пользователя с ID={}", itemId, userId);
-        return getWithHeaders("/" + itemId, userId);
+        log.info("Запрос информации о вещи с ID={} для пользователя {}", itemId, userId);
+        log.debug("Полный URL: {}/{}", rest.getUriTemplateHandler().toString(), itemId);
+
+        ResponseEntity<Object> response = getWithHeaders("/" + itemId, userId);
+
+        log.debug("Ответ от сервера: статус {}, тело: {}",
+                response.getStatusCode(), response.getBody());
+
+        return response;
     }
 }

@@ -185,14 +185,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemDtoWithBookingsAndComments(Long userId, Long itemId) {
-        log.info("Получение информации о вещи с ID={} с бронированиями и комментариями для пользователя с ID={}",
-                itemId, userId);
-
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " не найдена"));
 
         LocalDateTime now = LocalDateTime.now();
-
         BookingDto lastBooking = null;
         BookingDto nextBooking = null;
 
@@ -210,19 +206,20 @@ public class ItemServiceImpl implements ItemService {
                     .findFirst()
                     .map(bookingMapper::toBookingDto)
                     .orElse(null);
-
-            log.debug("Найдены бронирования для вещи с ID={}: последнее={}, следующее={}",
-                    itemId, lastBooking, nextBooking);
         }
 
         List<CommentDto> comments = commentRepository.findByItemId(itemId).stream()
-                .map(commentMapper::toCommentDto)
-                .collect(Collectors.toList());
+                .map(comment -> {
+                    CommentDto commentDto = new CommentDto();
+                    commentDto.setId(comment.getId());
+                    commentDto.setText(comment.getText());
+                    commentDto.setAuthorName(comment.getAuthor().getName());
+                    commentDto.setCreated(comment.getCreated());
+                    return commentDto;
+                }).collect(Collectors.toList());
 
-        log.debug("Найдено {} комментариев для вещи с ID={}", comments.size(), itemId);
-        ItemDto itemDto = itemMapper.toItemDto(item, lastBooking, nextBooking, comments);
-        log.info("Получена информация о вещи с бронированиями и комментариями: {}", itemDto);
-        return itemDto;
+        return itemMapper.toItemDto(item, lastBooking, nextBooking, comments);
     }
+
 
 }
