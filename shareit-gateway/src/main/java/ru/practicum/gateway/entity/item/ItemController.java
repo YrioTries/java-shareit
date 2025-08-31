@@ -1,5 +1,6 @@
 package ru.practicum.gateway.entity.item;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                          @RequestBody ItemDto itemDto) {
+                                          @RequestBody @Valid ItemDto itemDto) {
         return itemClient.create(userId, itemDto);
     }
 

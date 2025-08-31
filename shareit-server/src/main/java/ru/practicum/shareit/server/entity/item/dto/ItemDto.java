@@ -1,5 +1,6 @@
 package ru.practicum.shareit.server.entity.item.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,5 +32,6 @@ public class ItemDto {
 
     private List<CommentDto> comments;
 
+    @Nullable
     private Long requestId;
 }
