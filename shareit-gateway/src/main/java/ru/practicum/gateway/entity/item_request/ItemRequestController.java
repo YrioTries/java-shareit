@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
@@ -15,19 +13,19 @@ public class ItemRequestController {
 
     @GetMapping("/{requestId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ItemRequestDto> getRequestById(@PathVariable Long requestId) {
+    public ResponseEntity<Object> getRequestById(@PathVariable Long requestId) {
         return itemRequestClient.getRequestById(requestId);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ItemRequestDto>> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemRequestClient.getUserRequests(userId);
     }
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ItemRequestDto>> getAllRequests(
+    public ResponseEntity<Object> getAllRequests(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "0") Integer from,
             @RequestParam(defaultValue = "10") Integer size) {
@@ -36,7 +34,7 @@ public class ItemRequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ItemRequestDto> createRequest(
+    public ResponseEntity<Object> createRequest(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestBody ItemRequestDto itemRequestDto) {
         return itemRequestClient.createRequest(userId, itemRequestDto);

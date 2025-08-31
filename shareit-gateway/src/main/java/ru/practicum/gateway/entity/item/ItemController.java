@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,33 +18,32 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ItemDto> getItemById(@PathVariable Long id,
-                                               @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemClient.getItemById(id, userId);
+    public ResponseEntity<Object> getItemById(@PathVariable Long id) {
+        return itemClient.getItemById(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ItemDto>> getItemByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getItemByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemClient.getItemByUserId(userId);
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ItemDto>> searchText(@RequestParam("text") String text) {
+    public ResponseEntity<Object> searchText(@RequestParam("text") String text) {
         return itemClient.searchText(text);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ItemDto> create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                          @RequestBody ItemDto item) {
-        return itemClient.create(userId, item);
+    public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                          @RequestBody ItemDto itemDto) {
+        return itemClient.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ItemDto> update(@PathVariable Long itemId,
+    public ResponseEntity<Object> update(@PathVariable Long itemId,
                                           @RequestHeader("X-Sharer-User-Id") Long userId,
                                           @RequestBody Map<String, Object> updates) {
         return itemClient.update(itemId, userId, updates);
@@ -53,7 +51,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CommentDto> addComment(@PathVariable Long itemId,
+    public ResponseEntity<Object> addComment(@PathVariable Long itemId,
                                                  @RequestHeader("X-Sharer-User-Id") Long userId,
                                                  @RequestBody CommentDto commentDto) {
         return itemClient.addComment(itemId, userId, commentDto);

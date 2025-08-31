@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,32 +19,32 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserDto> getUserDto(@PathVariable Long id) {
+    public ResponseEntity<Object> getUserDto(@PathVariable Long id) {
         return userClient.getUserDto(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<UserDto>> getUserList() {
+    public ResponseEntity<Object> getUserList() {
         return userClient.getUserList();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDto> create(@RequestBody @Valid UserDto user) {
+    public ResponseEntity<Object> create(@RequestBody @Valid UserDto user) {
         return userClient.create(user);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserDto> update(@PathVariable Long id,
+    public ResponseEntity<Object> update(@PathVariable Long id,
                                           @RequestBody @Valid Map<String, Object> updates) {
         return userClient.update(id, updates);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
         return userClient.delete(id);
     }
 }
