@@ -33,7 +33,7 @@ public class ItemRequestClient extends BaseClient {
     @Cacheable(value = "itemRequests", key = "#requestId")
     public ResponseEntity<Object> getRequestById(Long requestId) {
         log.info("Отправка запроса на получение информации о запросе вещи с ID={}", requestId);
-        return get("", requestId);
+        return getWithHeaders("", requestId);
     }
 
 

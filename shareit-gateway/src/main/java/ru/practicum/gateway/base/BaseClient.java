@@ -78,6 +78,8 @@ public class BaseClient {
     protected ResponseEntity<Object> getWithHeaders(String path, long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Sharer-User-Id", String.valueOf(userId));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         return rest.exchange(path, HttpMethod.GET, requestEntity, Object.class);
     }

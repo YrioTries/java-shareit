@@ -77,7 +77,6 @@ public class ItemClient  extends BaseClient {
     @Cacheable(value = "items", key = "'item_' + #itemId + '_user_' + #userId")
     public ResponseEntity<Object> getItemDtoWithBookingsAndComments(Long itemId, Long userId) {
         log.info("Отправка запроса на получение информации о вещи с ID={} с бронированиями и комментариями для пользователя с ID={}", itemId, userId);
-        return get("/" + itemId, userId);
+        return getWithHeaders("/" + itemId, userId);
     }
-
 }
