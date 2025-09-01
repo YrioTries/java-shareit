@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ItemRequestServiceImpl implements ItemRequestService {
+
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -38,13 +39,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .orElseThrow(() -> new RuntimeException("Запрос не найден"));
 
         List<Item> relatedItems = itemRepository.findByRequestId(requestId);
-
         log.info("Найдено {} вещей, связанных с запросом id={}", relatedItems.size(), requestId);
-
         List<ItemResponseDto> itemResponseDtos = getItemResponses(relatedItems);
-
         ItemRequestDto result = itemRequestMapper.toItemRequestDtoWithItems(request, itemResponseDtos);
-
         log.info("Получен запрос на вещь: {}", result);
         return result;
     }
