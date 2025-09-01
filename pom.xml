@@ -41,6 +41,7 @@
 				<version>42.7.3</version>
 				<scope>runtime</scope>
 			</dependency>
+
 			<!-- Lombok -->
 			<dependency>
 				<groupId>org.projectlombok</groupId>
@@ -48,6 +49,7 @@
 				<version>${lombok.version}</version>
 				<scope>provided</scope>
 			</dependency>
+
 			<!-- MapStruct -->
 			<dependency>
 				<groupId>org.mapstruct</groupId>
