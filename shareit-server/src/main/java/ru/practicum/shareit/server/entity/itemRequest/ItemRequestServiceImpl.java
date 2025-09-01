@@ -28,14 +28,23 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestMapper itemRequestMapper;
 
     @Override
-    public ItemRequestDto getRequestById(Long requestId) {
+    public ItemRequestDto getRequestById(Long userId, Long requestId) {
         log.info("Получение запроса на вещь с id={}", requestId);
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден!"));
+
         ItemRequest request = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Запрос не найден"));
+
         List<Item> relatedItems = itemRepository.findByRequestId(requestId);
+
         log.info("Найдено {} вещей, связанных с запросом id={}", relatedItems.size(), requestId);
+
         List<ItemResponseDto> itemResponseDtos = getItemResponses(relatedItems);
+
         ItemRequestDto result = itemRequestMapper.toItemRequestDtoWithItems(request, itemResponseDtos);
+
         log.info("Получен запрос на вещь: {}", result);
         return result;
     }

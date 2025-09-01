@@ -1,5 +1,6 @@
 package ru.practicum.gateway.entity.item_request;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +10,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
+
     private final ItemRequestClient itemRequestClient;
 
     @GetMapping("/{requestId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> getRequestById(@PathVariable Long requestId) {
-        return itemRequestClient.getRequestById(requestId);
+    public ResponseEntity<Object> getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                 @PathVariable Long requestId) {
+        return itemRequestClient.getRequestById(userId, requestId);
     }
 
     @GetMapping
@@ -36,7 +39,7 @@ public class ItemRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> createRequest(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestBody ItemRequestDto itemRequestDto) {
+            @RequestBody @Valid  ItemRequestDto itemRequestDto) {
         return itemRequestClient.createRequest(userId, itemRequestDto);
     }
 }
