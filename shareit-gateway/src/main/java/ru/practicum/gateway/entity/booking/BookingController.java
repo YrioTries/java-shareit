@@ -58,6 +58,7 @@ public class BookingController {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
         return bookingClient.getOwnerBookings(ownerId, status, from, size);
     }
+
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<Object> deleteBooking(@RequestHeader("X-Sharer-User-Id") long userId,
                                                 @PathVariable Long bookingId) {

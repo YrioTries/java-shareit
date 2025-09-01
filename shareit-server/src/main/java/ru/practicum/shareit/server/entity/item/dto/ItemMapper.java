@@ -8,7 +8,6 @@ import ru.practicum.shareit.server.entity.booking.dto.BookingMapper;
 import ru.practicum.shareit.server.entity.comment.model.CommentDto;
 import ru.practicum.shareit.server.entity.comment.model.CommentMapper;
 import ru.practicum.shareit.server.entity.item.model.Item;
-import ru.practicum.shareit.server.entity.itemRequest.ItemRequest;
 import ru.practicum.shareit.server.entity.itemRequest.ItemRequestMapper;
 
 import java.util.List;
