@@ -1,5 +1,16 @@
-FROM openjdk:21-jdk-slim
+# Stage 1: Сборка проекта
+FROM eclipse-temurin:21-jdk-jammy as builder
 WORKDIR /app
-COPY server/target/*.jar app.jar
+# Копируем только необходимые файлы для сборки
+COPY server/pom.xml ./pom.xml
+COPY server/src ./src
+# Собираем проект
+RUN mvn clean package -DskipTests
+
+# Stage 2: Запуск приложения
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+# Копируем только собранный .jar файл (замените server-0.0.1-SNAPSHOT.jar на актуальное имя вашего .jar)
+COPY --from=builder /app/target/server-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 9090
 ENTRYPOINT ["java", "-jar", "app.jar"]
