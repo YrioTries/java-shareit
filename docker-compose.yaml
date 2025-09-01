@@ -16,12 +16,14 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+    networks:
+      - shareit-network
 
   # Сервер
   server:
-    build:
-      context: C:\Users\Дмитрий\IdeaProjects\java-shareit
-      dockerfile: server/Dockerfile
+    build: ./server
+    image: server
+    container_name: server
     ports:
       - "9090:9090"
     depends_on:
@@ -30,20 +32,28 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
       - SPRING_DATASOURCE_USERNAME=dbuser
       - SPRING_DATASOURCE_PASSWORD=12345
+      - SERVER_PORT=9090
     networks:
       - shareit-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   # Gateway
   gateway:
-    build:
-      context: C:\Users\Дмитрий\IdeaProjects\java-shareit
-      dockerfile: gateway/Dockerfile
+    build: ./gateway
+    image: gateway
+    container_name: gateway
     ports:
       - "8080:8080"
     depends_on:
-      - shareit-server
+      server:
+        condition: service_healthy
     environment:
-      - SERVER_URL=http://shareit-server:9090
+      - SHAREIT_SERVER_URL=http://server:9090
+      - GATEWAY_PORT=8080
     networks:
       - shareit-network
 
