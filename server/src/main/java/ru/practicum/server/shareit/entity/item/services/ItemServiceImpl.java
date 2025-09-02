@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.server.shareit.entity.booking.Booking;
 import ru.practicum.server.shareit.entity.booking.BookingRepository;
 import ru.practicum.server.shareit.entity.booking.dto.BookingDto;
 import ru.practicum.server.shareit.entity.booking.dto.BookingMapper;
@@ -158,12 +157,6 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " не найдена"));
-
-        List<Booking> userBookings = bookingRepository.findAllByUserBookings(userId, itemId, LocalDateTime.now());
-
-        if (userBookings.isEmpty()) {
-            throw new NotFoundException("У пользователя с id " + userId + " должно быть хотя бы одно бронирование предмета с id " + itemId);
-        }
 
         if (!bookingRepository.existsByBookerIdAndItemIdAndEndIsBefore(userId, itemId, LocalDateTime.now())) {
             log.error("Пользователь с ID={} не бронировал вещь с ID={}", userId, itemId);
