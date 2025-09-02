@@ -18,10 +18,10 @@ import ru.practicum.server.shareit.entity.itemRequest.ItemRequest;
 import ru.practicum.server.shareit.entity.itemRequest.ItemRequestRepository;
 import ru.practicum.server.shareit.entity.user.model.User;
 import ru.practicum.server.shareit.exception.NotFoundException;
-import ru.practicum.server.shareit.exception.ValidationException;
 import ru.practicum.server.shareit.entity.item.dto.ItemDto;
 import ru.practicum.server.shareit.entity.item.model.Item;
 import ru.practicum.server.shareit.entity.user.UserRepository;
+import ru.practicum.server.shareit.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -158,9 +158,14 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " не найдена"));
 
-        if (!bookingRepository.existsByBookerIdAndItemIdAndEndIsBefore(userId, itemId, LocalDateTime.now())) {
-            log.error("Пользователь с ID={} не бронировал вещь с ID={}", userId, itemId);
-            throw new ValidationException("Пользователь не бронировал эту вещь");
+        var userBookings = bookingRepository.findAllByUserBookings(userId, itemId, LocalDateTime.now());
+
+        if (userBookings.isEmpty()) {
+            throw new ValidationException("У пользователя с id " + userId + " должно быть хотя бы одно бронирование предмета с id " + itemId);
+        }
+
+        if (commentDto.getText() == null || commentDto.getText().isBlank()) {
+            throw new ValidationException("Текст комментария не может быть пустым");
         }
 
         Comment comment = new Comment(null,
