@@ -3,6 +3,7 @@ package ru.practicum.server.shareit.entity.item.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.server.shareit.entity.booking.BookingRepository;
@@ -24,6 +25,7 @@ import ru.practicum.server.shareit.entity.user.UserRepository;
 import ru.practicum.server.shareit.exception.ValidationException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -153,21 +155,58 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         log.info("Добавление комментария к вещи с ID={} от пользователя с ID={}, текст: {}",
                 itemId, userId, commentDto.getText());
+
         User author = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " не найдена"));
 
-        var userBookings = bookingRepository.findAllByUserBookings(userId, itemId, LocalDateTime.now());
 
-        if (userBookings.isEmpty()) {
-            throw new ValidationException("У пользователя с id " + userId + " должно быть хотя бы одно бронирование предмета с id " + itemId);
-        }
+        LocalDateTime now = LocalDateTime.now();
+        log.debug("Текущее время (сервер): {}", now);
+        log.debug("Текущее время (UTC): {}", LocalDateTime.now(ZoneOffset.UTC));
 
         if (commentDto.getText() == null || commentDto.getText().isBlank()) {
             throw new ValidationException("Текст комментария не может быть пустым");
         }
 
+        log.debug("Поиск последнего бронирования для itemId={}, userId={}", itemId, userId);
+        BookingDto lastBooking = bookingRepository.findLastBookingForItemSimple(itemId, userId, now, PageRequest.of(0, 1, Sort.by("end").descending()))
+                .stream()
+                .findFirst()
+                .map(bookingMapper::toBookingDto)
+                .orElse(null);
+
+        log.debug("Найденное бронирование: {}", lastBooking);
+
+        if (lastBooking != null) {
+            log.debug("Детали бронирования - ID: {}, End: {}, Status: {}",
+                    lastBooking.getId(), lastBooking.getEnd(), lastBooking.getStatus());
+            log.debug("Бронирование завершено: {}", lastBooking.getEnd().isBefore(now));
+            log.debug("Бронирование активно: {}", lastBooking.getEnd().isAfter(now));
+            log.debug("Статус APPROVED: {}", "APPROVED".equals(lastBooking.getStatus()));
+        }
+
+        // ПРАВИЛЬНАЯ ЛОГИКА:
+        // 1. Если бронирования нет - нельзя комментировать
+        if (lastBooking == null) {
+            log.warn("Не найдено бронирований для userId={}, itemId={}", userId, itemId);
+            throw new ValidationException("У пользователя не было бронирований этого предмета");
+        }
+
+        // 2. Если бронирование еще не завершилось - нельзя комментировать
+        if (lastBooking.getEnd().isBefore(now)) {
+            log.warn("Бронирование еще не завершено. End: {}, Now: {}", lastBooking.getEnd(), now);
+            throw new ValidationException("Нельзя комментировать предмет до завершения бронирования");
+        }
+
+        // 3. Если бронирование не APPROVED - нельзя комментировать
+        if (!"APPROVED".equals(lastBooking.getStatus())) {
+            log.warn("Бронирование не подтверждено. Status: {}", lastBooking.getStatus());
+            throw new ValidationException("Можно комментировать только подтвержденные бронирования");
+        }
+
+        log.debug("Все проверки пройдены. Создание комментария...");
         Comment comment = new Comment(null,
                 commentDto.getText(),
                 item,
@@ -191,7 +230,7 @@ public class ItemServiceImpl implements ItemService {
 
         if (item.getOwner().getId().equals(userId)) {
             lastBooking = bookingRepository
-                    .findLastBookingForItem(itemId, now, PageRequest.of(0, 1))
+                    .findLastBookingForItem(itemId, userId, now, PageRequest.of(0, 1))
                     .stream()
                     .findFirst()
                     .map(bookingMapper::toBookingDto)
@@ -217,6 +256,12 @@ public class ItemServiceImpl implements ItemService {
 
         return itemMapper.toItemDto(item, lastBooking, nextBooking, comments);
     }
+
+//    private Optional<Booking> getLastBooking(List<Booking> userBookings) {
+//        return userBookings.stream()
+//                .sorted(Comparator.comparing(Booking::getEnd).reversed()) // Сортируем по дате окончания (по убыванию)
+//                .findFirst(); // Берём первое (последнее по времени)
+//    }
 
 
 }
