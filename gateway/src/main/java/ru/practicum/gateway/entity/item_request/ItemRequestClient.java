@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -30,20 +28,20 @@ public class ItemRequestClient extends BaseClient {
         );
     }
 
-    @Cacheable(value = "itemRequests", key = "#requestId")
+//    @Cacheable(value = "itemRequests", key = "#requestId")
     public ResponseEntity<Object> getRequestById(Long userId, Long requestId) {
         log.info("Отправка запроса на получение информации о запросе вещи с ID={}", requestId);
         return get("/" + requestId, userId);
     }
 
 
-    @Cacheable(value = "itemRequests", key = "'user_' + #userId")
+//    @Cacheable(value = "itemRequests", key = "'user_' + #userId")
     public ResponseEntity<Object> getUserRequests(Long userId) {
         log.info("Отправка запроса на получение списка запросов вещей пользователя с ID={}", userId);
         return get("", userId);
     }
 
-    @Cacheable(value = "itemRequests", key = "'all_user_' + #userId + '_from_' + #from + '_size_' + #size")
+//    @Cacheable(value = "itemRequests", key = "'all_user_' + #userId + '_from_' + #from + '_size_' + #size")
     public ResponseEntity<Object> getAllRequests(Long userId, Integer from, Integer size) {
         log.info("Отправка запроса на получение всех запросов вещей, кроме пользователя с ID={}, начиная с {} по {}", userId, from, size);
         Map<String, Object> parameters = Map.of(
@@ -53,7 +51,7 @@ public class ItemRequestClient extends BaseClient {
         return get("/all", userId, parameters);
     }
 
-    @CacheEvict(value = "itemRequests", allEntries = true)
+//    @CacheEvict(value = "itemRequests", allEntries = true)
     public ResponseEntity<Object> createRequest(Long userId, ItemRequestDto itemRequestDto) {
         log.info("Отправка запроса на создание нового запроса вещи от пользователя с ID={}, данные: {}", userId, itemRequestDto);
         return post("", userId, itemRequestDto);

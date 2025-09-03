@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,7 @@ public class UserClient extends BaseClient {
         );
     }
 
-    @Cacheable(value = "users", key = "'all'")
+//    @Cacheable(value = "users", key = "'all'")
     public ResponseEntity<Object> getUserList() {
         log.info("Отправка запроса на получение списка всех пользователей");
         ResponseEntity<Object> response = get("");
@@ -38,26 +36,26 @@ public class UserClient extends BaseClient {
         return response;
     }
 
-    @Cacheable(value = "users", key = "#id")
+//    @Cacheable(value = "users", key = "#id")
     public ResponseEntity<Object> getUserDto(Long id) {
         log.info("Отправка запроса на получение пользователя с id={}", id);
         return get("/" + id);
     }
 
-    @CacheEvict(value = "users", allEntries = true)
+//    @CacheEvict(value = "users", allEntries = true)
     public ResponseEntity<Object> create(UserDto userDto) {
         log.info("Отправка запроса на создание пользователя: {}", userDto);
         return post("", userDto);
     }
 
-    @CacheEvict(value = "users", key = "#userId")
+//    @CacheEvict(value = "users", key = "#userId")
     public ResponseEntity<Object> update(Long userId, Map<String, Object> updates) {
         log.info("Отправка запроса на обновление пользователя с ID={}, данные: {}", userId, updates);
         return patch("/" + userId, updates);
     }
 
 
-    @CacheEvict(value = "users", key = "#id")
+//    @CacheEvict(value = "users", key = "#id")
     public ResponseEntity<Object> delete(Long id) {
         log.info("Отправка запроса на удаление пользователя с id={}", id);
         return delete("/" + id);

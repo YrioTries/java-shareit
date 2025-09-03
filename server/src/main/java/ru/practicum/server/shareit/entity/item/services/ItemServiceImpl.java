@@ -25,7 +25,6 @@ import ru.practicum.server.shareit.entity.user.UserRepository;
 import ru.practicum.server.shareit.exception.ValidationException;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -161,52 +160,35 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " не найдена"));
 
-
         LocalDateTime now = LocalDateTime.now();
-        log.debug("Текущее время (сервер): {}", now);
-        log.debug("Текущее время (UTC): {}", LocalDateTime.now(ZoneOffset.UTC));
 
         if (commentDto.getText() == null || commentDto.getText().isBlank()) {
             throw new ValidationException("Текст комментария не может быть пустым");
         }
 
-        log.debug("Поиск последнего бронирования для itemId={}, userId={}", itemId, userId);
-        BookingDto lastBooking = bookingRepository.findLastBookingForItemSimple(itemId, userId, now, PageRequest.of(0, 1, Sort.by("end").descending()))
+        BookingDto lastBooking = bookingRepository.findLastBookingForItem(itemId, userId, now, PageRequest.of(0, 1, Sort.by("end").descending()))
                 .stream()
                 .findFirst()
                 .map(bookingMapper::toBookingDto)
                 .orElse(null);
 
-        log.debug("Найденное бронирование: {}", lastBooking);
-
-        if (lastBooking != null) {
-            log.debug("Детали бронирования - ID: {}, End: {}, Status: {}",
-                    lastBooking.getId(), lastBooking.getEnd(), lastBooking.getStatus());
-            log.debug("Бронирование завершено: {}", lastBooking.getEnd().isBefore(now));
-            log.debug("Бронирование активно: {}", lastBooking.getEnd().isAfter(now));
-            log.debug("Статус APPROVED: {}", "APPROVED".equals(lastBooking.getStatus()));
-        }
-
         // ПРАВИЛЬНАЯ ЛОГИКА:
         // 1. Если бронирования нет - нельзя комментировать
+        // 2. Если бронирование еще не завершилось - нельзя комментировать
+        // 3. Если бронирование не APPROVED - нельзя комментировать
+
         if (lastBooking == null) {
-            log.warn("Не найдено бронирований для userId={}, itemId={}", userId, itemId);
             throw new ValidationException("У пользователя не было бронирований этого предмета");
         }
 
-        // 2. Если бронирование еще не завершилось - нельзя комментировать
-        if (lastBooking.getEnd().isBefore(now)) {
-            log.warn("Бронирование еще не завершено. End: {}, Now: {}", lastBooking.getEnd(), now);
+        if (lastBooking.getEnd().isAfter(now)) {
             throw new ValidationException("Нельзя комментировать предмет до завершения бронирования");
         }
 
-        // 3. Если бронирование не APPROVED - нельзя комментировать
         if (!"APPROVED".equals(lastBooking.getStatus())) {
-            log.warn("Бронирование не подтверждено. Status: {}", lastBooking.getStatus());
             throw new ValidationException("Можно комментировать только подтвержденные бронирования");
         }
 
-        log.debug("Все проверки пройдены. Создание комментария...");
         Comment comment = new Comment(null,
                 commentDto.getText(),
                 item,
