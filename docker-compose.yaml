@@ -1,16 +1,42 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+
 services:
   db:
     image: postgres:16.1
     ports:
       - "5432:5432"
-    volumes:
-      - ./volumes/postgres:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=shareit
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=12345
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: shareit
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
-      timeout: 5s
-      interval: 5s
-      retries: 10
+      test: ["CMD-SHELL", "pg_isready -U dbuser -d shareit"]
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit  # ← db вместо postgres
+      - SPRING_DATASOURCE_USERNAME=dbuser
+      - SPRING_DATASOURCE_PASSWORD=12345
+    depends_on:
+      - db  # ← зависит от db, а не postgres
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SHAREIT_SERVER_URL=http://server:9090
+    depends_on:
+      - server
